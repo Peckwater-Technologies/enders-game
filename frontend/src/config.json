@@ -1,7 +1,6 @@
 {
 	"shooter": {
-		"width": 40,
-		"height": 40,
+		"radius": 20,
 		"colour": "blue"
 	},
 	"bullet": {

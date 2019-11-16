@@ -1,5 +1,5 @@
 import React from 'react';
-import {Circle, Group} from 'react-konva';
+import {Ellipse, Circle, Rect, Group} from 'react-konva';
 import config from '../config.json';
 const {shooter} = config;
 
@@ -14,28 +14,41 @@ export default class Bullet extends React.Component {
 				y={b.y}
 			>
 				<Circle
-					width={shooter.width}
-					height={shooter.height}
+					radius={shooter.radius}
 					fill={shooter.colour}
 					rotation={b.angle}
 					draggable={true}
-				/>
+				/>	
 				<Circle
-					x={shooter.width / (2 * Math.sqrt(2))}
-					y={-shooter.height / (2 * Math.sqrt(2))}
-					width={10}
-					height={10}
+					id='left-hand'
+					//x={-shooter.radius / (Math.sqrt(2))}
+					//y={-shooter.radius / (Math.sqrt(2))}
+					y={-shooter.radius}
+					radius={5}
 					fill='white'
 					rotation={b.angle}
 					draggable={true}
+				/>		
+				<Rect
+					id='gun'
+					x={-4}
+					y={-Math.sqrt(2 * (shooter.radius ** 2)) - 30}
+					width={8}
+					height={30}
+					fill='black'
+					draggable={true}
 				/>
-				<Circle
-					x={-shooter.width / (2 * Math.sqrt(2))}
-					y={-shooter.height / (2 * Math.sqrt(2))}
+				<Ellipse
+					id='right-hand'
 					width={10}
 					height={10}
+					x={Math.sqrt((shooter.radius ** 2) / 8)}
+					y={-2 * shooter.radius}
+					//height={shooter.radius}
+					//x={Math.sqrt((shooter.radius ** 2) / 8)}
+					//y={-3 * Math.sqrt((shooter.radius ** 2) / 8)}
 					fill='white'
-					rotation={b.angle}
+					rotation={-45}
 					draggable={true}
 				/>
 			</Group>

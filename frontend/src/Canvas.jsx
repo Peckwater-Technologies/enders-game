@@ -9,6 +9,7 @@ export default class Canvas extends React.Component {
 
 	constructor(props) {
 		super(props);
+		this.checkSize = this.checkSize.bind(this);
 		this.state = {
 			surface: {
 				width: 1920,
@@ -21,8 +22,9 @@ export default class Canvas extends React.Component {
 			},
 			shooters: [
 				{
-					x: 50,
-					y: 50
+					x: 100,
+					y: 100,
+					angle: 135
 				},				
 				{
 					x: 200,
@@ -31,18 +33,18 @@ export default class Canvas extends React.Component {
 			],
 			bullets: [
 				{
-					x: 80,
-					y: 80,
+					x: 140,
+					y: 140,
 					angle: 45
 				},
 				{
-					x: 90,
-					y: 90,
+					x: 160,
+					y: 160,
 					angle: 45
 				},
 				{
-					x: 100,
-					y: 100,
+					x: 180,
+					y: 180,
 					angle: 45
 				}
 			]
@@ -59,7 +61,7 @@ export default class Canvas extends React.Component {
 		window.removeEventListener('resize', this.checkSize);
 	}
 
-	checkSize () {
+	checkSize() {
 		let state = this.state;
 		state.surface.width = window.innerWidth;
 		state.surface.height = window.innerHeight;
