@@ -20,5 +20,7 @@
         "@typescript-eslint"
     ],
     "rules": {
+		"no-non-null-assertion": "off",
+		"strictNullChecks": "off"
     }
 }

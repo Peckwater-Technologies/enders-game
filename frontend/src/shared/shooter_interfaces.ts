@@ -1,25 +1,27 @@
-import {GameState, GameAction, GameObservation, Agent, Renderer, Game} from "./interfaces"
+import {GameState, GameAction, GameObservation, Agent, Renderer, Game} from "./interfaces";
 
 export const GameOptions = {
-  gameWidth: 600,
-  gameHeight: 400,
-  fps: 30, // so a tick every 1000/30 = 33ms
+	gameWidth: 600,
+	gameHeight: 400,
+	fps: 30, // so a tick every 1000/30 = 33ms
 
-  playerRadius: 20,
-  playerMoveSpeed: 50,  // pixels / second
-  playerTurnSpeed: 180, // degrees  / second
+	playerRadius: 20,
+	playerMoveSpeed: 50, // pixels / second
+	playerTurnSpeed: 180, // degrees  / second
 
-  sensorRadius: 100,
+	sensorRadius: 100,
 
-  bulletSpeed: 500, // pixels / second
-  bulletRadius: 2,
-  bulletDamage: 0.5, // amount of player health removed (starting health is 1)
-  bulletCooldown: 1, // time between bullets
+	bulletSpeed: 500, // pixels / second
+	bulletRadius: 2,
+	bulletDamage: 0.5, // amount of player health removed (starting health is 1)
+	bulletCooldown: 1, // time between bullets
+
+	treeRadius: 30, //
 }
 
 export interface ShooterState extends GameState {
-  players: Array<Player>;
-  bullets: Array<Bullet>;
+	players: Array < Player > ;
+	bullets: Array < Bullet > ;
 }
 
 export interface Player {
@@ -30,21 +32,21 @@ export interface Player {
 }
 
 export interface Bullet {
-  sourceAgent: number;
-  x: number;
-  y: number;
-  angle: number;
+	sourceAgent: number;
+	x: number;
+	y: number;
+	angle: number;
 }
 
 export interface ShooterObservation extends GameObservation {
-  x: number;
-  y: number;
-  angle: number;
-  cooldown: number; // seconds left
+	x: number;
+	y: number;
+	angle: number;
+	cooldown: number; // seconds left
 
-  // Sensors are 0 or 1 (indicating presence)
-  enemySensors: Array<number>;
-  bulletSensors: Array<number>;
+	// Sensors are 0 or 1 (indicating presence)
+	enemySensors: Array < number > ;
+	bulletSensors: Array < number > ;
 }
 
 

@@ -1,56 +1,24 @@
-import React, {useState} from 'react';
-import { Stage, Layer, Rect, Text, Circle } from 'react-konva';
-import Konva from 'konva';
+import React from 'react';
+import { Stage, Layer, Rect} from 'react-konva';
 
-import Shooter from './Objects/Shooter.jsx';
-import Bullet from './Objects/Bullet.jsx';
+import Shooter from './Objects/Shooter';
+import Bullet from './Objects/Bullet';
+import Tree from './Objects/Tree';
+
+import config from './config.json';
+import defaults from './defaults.json';
+
+const {background} = config;
 
 export default class Canvas extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {
-			surface: {
-				width: 1920,
-				height: 1080,
-				left: 0,
-				top: 0,
-			},
-			layer: {
-				fill: 'green'
-			},
-			shooters: [
-				{
-					x: 50,
-					y: 50
-				},				
-				{
-					x: 200,
-					y: 200
-				}
-			],
-			bullets: [
-				{
-					x: 80,
-					y: 80,
-					angle: 45
-				},
-				{
-					x: 90,
-					y: 90,
-					angle: 45
-				},
-				{
-					x: 100,
-					y: 100,
-					angle: 45
-				}
-			]
-		}
+		this.checkSize = this.checkSize.bind(this);
+		this.state = defaults;
 	}
 
 	componentDidMount() {
-		const canvas = this.refs.canvas;
 		this.checkSize();
 		window.addEventListener('resize', this.checkSize);
 	}
@@ -59,7 +27,7 @@ export default class Canvas extends React.Component {
 		window.removeEventListener('resize', this.checkSize);
 	}
 
-	checkSize () {
+	checkSize() {
 		let state = this.state;
 		state.surface.width = window.innerWidth;
 		state.surface.height = window.innerHeight;
@@ -67,7 +35,6 @@ export default class Canvas extends React.Component {
 	}
 
 	componentDidUpdate() {
-		console.log(this.refs);
 		const canvas = this.refs.canvas;/*
 		let ctx = canvas.getContext('2d');
 		ctx.beginPath();
@@ -82,15 +49,18 @@ export default class Canvas extends React.Component {
 		return <Stage {...this.state.surface} ref='canvas' >
 			<Layer id='background'>				
 				<Rect
-					x={0}
-					y={0}
+					x={background.x}
+					y={background.y}
 					width={this.state.surface.width}
 					height={this.state.surface.height}
-					fill='#608038'
-					style={{
-						display: 'none'
-					}}
+					fill={background.colour}
 				/>
+			</Layer>
+			<Layer id='trees' {...this.state.layer}>
+				{this.state.trees.map((b, i) => <Tree
+					key = {['tree', i].join('.')}
+					data={b}
+				/>)}
 			</Layer>
 			<Layer id='shooters' {...this.state.layer}>			
 				{this.state.shooters.map((b, i) => <Shooter

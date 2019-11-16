@@ -1,5 +1,6 @@
 import React from 'react';
-import {Circle, Group} from 'react-konva';
+import {Ellipse, Circle, Rect, Group} from 'react-konva';
+import {GameOptions} from '../shared/shooter_interfaces';
 import config from '../config.json';
 const {shooter} = config;
 
@@ -12,30 +13,42 @@ export default class Bullet extends React.Component {
 				rotation={b.angle}
 				x={b.x}
 				y={b.y}
+				draggable={true}
 			>
 				<Circle
-					width={shooter.width}
-					height={shooter.height}
+					radius={GameOptions.playerRadius}
 					fill={shooter.colour}
 					rotation={b.angle}
-					draggable={true}
+				/>		
+				<Rect
+					id='gun'
+					x={-0.5 * shooter.gunWidth}
+					y={-Math.sqrt(2) * GameOptions.playerRadius - shooter.gunLength}
+					width={shooter.gunWidth}
+					height={shooter.gunLength}
+					fill={shooter.gunColour}
 				/>
 				<Circle
-					x={shooter.width / (2 * Math.sqrt(2))}
-					y={-shooter.height / (2 * Math.sqrt(2))}
-					width={10}
-					height={10}
+					id='left-hand'
+					//x={-GameOptions.playerRadius / (Math.sqrt(2))}
+					//y={-GameOptions.playerRadius / (Math.sqrt(2))}
+					y={-GameOptions.playerRadius}
+					radius={5}
 					fill='white'
 					rotation={b.angle}
 					draggable={true}
 				/>
-				<Circle
-					x={-shooter.width / (2 * Math.sqrt(2))}
-					y={-shooter.height / (2 * Math.sqrt(2))}
-					width={10}
-					height={10}
-					fill='white'
-					rotation={b.angle}
+				<Ellipse
+					id='right-hand'
+					width={shooter.handRadius * 2}
+					height={shooter.handRadius * 2}
+					x={shooter.gunWidth}
+					y={-2 * GameOptions.playerRadius}
+					//height={GameOptions.playerRadius}
+					//x={Math.sqrt((GameOptions.playerRadius ** 2) / 8)}
+					//y={-3 * Math.sqrt((GameOptions.playerRadius ** 2) / 8)}
+					//rotation={-45}
+					fill={shooter.handColour}
 					draggable={true}
 				/>
 			</Group>

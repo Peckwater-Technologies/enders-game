@@ -1,12 +1,25 @@
 {
+	"background": {
+		"colour": "#608038",
+		"x": 0,
+		"y": 0
+	},
 	"shooter": {
-		"width": 40,
-		"height": 40,
-		"colour": "blue"
+		"radius": 20,
+		"colour": "blue",
+		"handColour": "white",
+		"gunColour": "black",
+		"handRadius": 5,
+		"gunWidth": 8,
+		"gunLength": 30
 	},
 	"bullet": {
-		"width": 5,
-		"height": 2,
 		"colour": "#080808"
+	},
+	"tree": {
+		"colour": "#2d572c",
+		"trunkColour": "#381f08",
+		"min": 20,
+		"max": 50
 	}
 }
