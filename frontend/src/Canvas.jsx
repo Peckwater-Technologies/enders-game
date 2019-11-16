@@ -21,28 +21,28 @@ export default class Canvas extends React.Component {
 			},
 			shooters: [
 				{
-					x: 20,
-					y: 20
+					x: 50,
+					y: 50
 				},				
 				{
-					x: 980,
-					y: 560
+					x: 200,
+					y: 200
 				}
 			],
 			bullets: [
 				{
-					x: 30,
-					y: 30,
+					x: 80,
+					y: 80,
 					angle: 45
 				},
 				{
-					x: 35,
-					y: 35,
+					x: 90,
+					y: 90,
 					angle: 45
 				},
 				{
-					x: 40,
-					y: 40,
+					x: 100,
+					y: 100,
 					angle: 45
 				}
 			]
