@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import { Stage, Layer, Rect, Text, Circle } from 'react-konva';
 import Konva from 'konva';
 
@@ -33,8 +33,8 @@ export default class Canvas extends React.Component {
 			],
 			bullets: [
 				{
-					x: 140,
-					y: 140,
+					x: 150,
+					y: 150,
 					angle: 45
 				},
 				{
@@ -43,8 +43,8 @@ export default class Canvas extends React.Component {
 					angle: 45
 				},
 				{
-					x: 180,
-					y: 180,
+					x: 170,
+					y: 170,
 					angle: 45
 				}
 			]
@@ -52,7 +52,6 @@ export default class Canvas extends React.Component {
 	}
 
 	componentDidMount() {
-		const canvas = this.refs.canvas;
 		this.checkSize();
 		window.addEventListener('resize', this.checkSize);
 	}

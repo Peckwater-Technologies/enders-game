@@ -31,16 +31,15 @@ export default class Bullet extends React.Component {
 				/>		
 				<Rect
 					id='gun'
-					x={-4}
-					y={-Math.sqrt(2 * (shooter.radius ** 2)) - 30}
-					width={8}
-					height={30}
+					x={-0.5 * shooter.gunWidth}
+					y={-Math.sqrt(2) * shooter.radius - shooter.gunLength}
+					width={shooter.gunWidth}
+					height={shooter.gunLength}
 					fill='black'
-					draggable={true}
 				/>
 				<Ellipse
 					id='right-hand'
-					width={10}
+					width={shooter.handRadius * 2}
 					height={10}
 					x={Math.sqrt((shooter.radius ** 2) / 8)}
 					y={-2 * shooter.radius}

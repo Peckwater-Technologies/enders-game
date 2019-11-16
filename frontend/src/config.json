@@ -1,7 +1,10 @@
 {
 	"shooter": {
 		"radius": 20,
-		"colour": "blue"
+		"colour": "blue",
+		"handRadius": 5,
+		"gunWidth": 8,
+		"gunLength": 30
 	},
 	"bullet": {
 		"width": 5,
