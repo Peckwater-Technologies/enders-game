@@ -1,5 +1,6 @@
-import {ShooterState, } from "shooter_interfaces"
-import {DumbAgent, } from "shoote_agent"
+import {ShooterState, ShooterAction, } from "shooter_interfaces"
+import {DumbAgent, } from "shooter_agent"
+import {SomeRenderer, } from "renderer"
 
 
 var state: ShooterState = {
@@ -14,9 +15,24 @@ var state: ShooterState = {
   bullets: [];
 };
 
-var agent1: Agent<ShooterState, ShooterAction> = new DumbAgent();
-var agent2: Agent<ShooterState, ShooterAction> = new DumbAgent();
+var agent1 = new DumbAgent();
+var agent2 = new DumbAgent();
 
+function computeVision(x: number, y: number, angle: number, spread: number, no_sensors: number): Array<number> {
+  var slice = spread / no_sensors;
+  var ray_angle = angle - (spread / 2);
+  for(let i = 0; i < no_sensors; i++) {
+    
+  }
+}
 while(true) {
+  var vision1 = ShooterObservation {
+    x: x1;
+    y: y1;
+    angle: angle1;
+    sensors: ;
+  }
+  //var action1: ShooterAction = agent1.act(state);
+  //var action2: ShooterAction = agent2.act(state);
 
 }
