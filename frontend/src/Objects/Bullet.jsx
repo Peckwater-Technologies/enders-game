@@ -1,5 +1,7 @@
 import React from 'react';
-import {Rect, Group} from 'react-konva';
+import {Circle, Group} from 'react-konva';
+
+import {GameOptions} from '../shared/shooter_interfaces.ts';
 import config from '../config.json';
 const {bullet} = config;
 
@@ -13,9 +15,8 @@ export default class Bullet extends React.Component {
 				x={b.x}
 				y={b.y}
 			>
-				<Rect
-					width={bullet.width}
-					height={bullet.height}
+				<Circle
+					radius={GameOptions.bulletRadius}
 					fill={bullet.colour}
 				/>
 			</Group>

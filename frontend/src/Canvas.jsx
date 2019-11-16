@@ -1,8 +1,10 @@
 import React from 'react';
 import { Stage, Layer, Rect} from 'react-konva';
 
-import Shooter from './Objects/Shooter.jsx';
-import Bullet from './Objects/Bullet.jsx';
+import Shooter from './Objects/Shooter';
+import Bullet from './Objects/Bullet';
+import Tree from './Objects/Tree';
+
 import config from './config.json';
 import defaults from './defaults.json';
 
@@ -53,6 +55,12 @@ export default class Canvas extends React.Component {
 					height={this.state.surface.height}
 					fill={background.colour}
 				/>
+			</Layer>
+			<Layer id='trees' {...this.state.layer}>
+				{this.state.trees.map((b, i) => <Tree
+					key = {['tree', i].join('.')}
+					data={b}
+				/>)}
 			</Layer>
 			<Layer id='shooters' {...this.state.layer}>			
 				{this.state.shooters.map((b, i) => <Shooter
