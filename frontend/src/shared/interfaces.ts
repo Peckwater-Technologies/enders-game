@@ -1,3 +1,4 @@
+// @ts-ignore 
 interface GameState {
 
 }
@@ -6,8 +7,12 @@ interface GameAction {
 
 }
 
-interface Agent<State extends GameState, Action extends GameAction> {
-  act(state: State): Action;
+interface GameObservation {
+
+}
+
+interface Agent<Observation extends GameObservation, Action extends GameAction> {
+  act(observation: Observation): Action;
 }
 
 
@@ -23,6 +28,23 @@ interface Game<State extends GameState> {
 /// EXAMPLE --- shooterRenderer.ts
 
 interface ShooterState extends GameState {
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  angle1: number;
+  angle2: number;
+  bullets: Array<Bullet>;
+}
+
+interface Bullet {
+  sourceAgent: number;
+  x: number;
+  y: number;
+  angle: number;
+}
+
+interface ShooterObservation extends GameObservation {
   x: number;
   y: number;
   angle: number;
