@@ -15,14 +15,13 @@ export interface Agent<Observation extends GameObservation, Action extends GameA
   act(observation: Observation): Action;
 }
 
-
 export interface Renderer<State extends GameState> {
   render(state: State): void;
 }
 
-export interface Game<State extends GameState> {
-  initialState: (seed: number) => State;
-  renderer: Renderer<State>;
+export interface Game<State extends GameState, Action extends GameAction> {
+  createState: (seed: number) => State;
+  updateState: (state: State, action: Action) => State;
 }
 
 /// EXAMPLE --- shooterRenderer.ts
