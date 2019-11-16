@@ -1,22 +1,15 @@
 .App {
-  text-align: center;
+	text-align: center;
+	height: 100vh;
+	width: 100vw;
+	margin: 0 auto;
 }
 
-.App-logo {
-  height: 40vmin;
+.App > div, div.konvajs-content {
+	height: 100% !important;
+	width: 100% !important;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #09d3ac;
+canvas {
+	height: 100% !important;
 }

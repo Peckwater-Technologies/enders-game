@@ -3,12 +3,7 @@ import {GameState, GameAction, GameObservation, Agent, Renderer, Game} from "./i
 export interface ShooterState extends GameState {
   width: number;
   height: number;
-  x1: number;
-  y1: number;
-  x2: number;
-  y2: number;
-  angle1: number;
-  angle2: number;
+  agents: Array<[number, number, number]>; //(x, y, angle)
   bullets: Array<Bullet>;
 }
 
