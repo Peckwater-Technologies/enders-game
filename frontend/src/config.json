@@ -1,4 +1,9 @@
 {
+	"background": {
+		"colour": "#608038",
+		"x": 0,
+		"y": 0
+	},
 	"shooter": {
 		"radius": 20,
 		"colour": "blue",

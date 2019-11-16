@@ -1,54 +1,19 @@
 import React from 'react';
-import { Stage, Layer, Rect, Text, Circle } from 'react-konva';
-import Konva from 'konva';
+import { Stage, Layer, Rect} from 'react-konva';
 
 import Shooter from './Objects/Shooter.jsx';
 import Bullet from './Objects/Bullet.jsx';
+import config from './config.json';
+import defaults from './defaults.json';
+
+const {background} = config;
 
 export default class Canvas extends React.Component {
 
 	constructor(props) {
 		super(props);
 		this.checkSize = this.checkSize.bind(this);
-		this.state = {
-			surface: {
-				width: 1920,
-				height: 1080,
-				left: 0,
-				top: 0,
-			},
-			layer: {
-				fill: 'green'
-			},
-			shooters: [
-				{
-					x: 100,
-					y: 100,
-					angle: 135
-				},				
-				{
-					x: 200,
-					y: 200
-				}
-			],
-			bullets: [
-				{
-					x: 150,
-					y: 150,
-					angle: 45
-				},
-				{
-					x: 160,
-					y: 160,
-					angle: 45
-				},
-				{
-					x: 170,
-					y: 170,
-					angle: 45
-				}
-			]
-		}
+		this.state = defaults;
 	}
 
 	componentDidMount() {
@@ -68,7 +33,6 @@ export default class Canvas extends React.Component {
 	}
 
 	componentDidUpdate() {
-		console.log(this.refs);
 		const canvas = this.refs.canvas;/*
 		let ctx = canvas.getContext('2d');
 		ctx.beginPath();
@@ -83,14 +47,11 @@ export default class Canvas extends React.Component {
 		return <Stage {...this.state.surface} ref='canvas' >
 			<Layer id='background'>				
 				<Rect
-					x={0}
-					y={0}
+					x={background.x}
+					y={background.y}
 					width={this.state.surface.width}
 					height={this.state.surface.height}
-					fill='#608038'
-					style={{
-						display: 'none'
-					}}
+					fill={background.colour}
 				/>
 			</Layer>
 			<Layer id='shooters' {...this.state.layer}>			
