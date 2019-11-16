@@ -26,6 +26,7 @@ export interface Player {
   x: number,
   y: number,
   angle: number,
+  cooldown: number,
 }
 
 export interface Bullet {
@@ -46,10 +47,11 @@ export interface ShooterObservation extends GameObservation {
   bulletSensors: Array<number>;
 }
 
+
 export interface ShooterAction extends GameAction {
   fireBullet: boolean;
   // If both are specified (or none) then don't turn
   turnLeft: boolean;
   turnRight: boolean;
-  moveForward: number;
+  moveForward: boolean;
 }
