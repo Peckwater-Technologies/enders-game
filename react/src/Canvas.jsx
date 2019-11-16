@@ -2,7 +2,10 @@ import React, {useState} from 'react';
 import { Stage, Layer, Rect, Text, Circle } from 'react-konva';
 import Konva from 'konva';
 
-class Canvas extends React.Component {
+import Shooter from './Objects/Shooter.jsx';
+import Bullet from './Objects/Bullet.jsx';
+
+export default class Canvas extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -20,6 +23,10 @@ class Canvas extends React.Component {
 				{
 					x: 20,
 					y: 20
+				},				
+				{
+					x: 980,
+					y: 560
 				}
 			],
 			bullets: [
@@ -85,49 +92,18 @@ class Canvas extends React.Component {
 					}}
 				/>
 			</Layer>
-			<Layer id='shooters' {...this.state.layer}>
-				<Circle
-					x={this.state.surface.width / 2}
-					y={this.state.surface.height / 2}
-					width={20}
-					height={20}
-					fill={Konva.Util.getRandomColor()}
-					draggable={true}
-				/>				
-				{this.state.shooters.map((b, i) => {
-					return (
-						<Circle
-							key = {['shooter', i].join('.')}
-							x={b.x}
-							y={b.y}
-							width={20}
-							height={20}
-							fill='dark green'
-							rotation={b.angle}
-							draggable={true}
-						/>
-						
-					)
-				})}
+			<Layer id='shooters' {...this.state.layer}>			
+				{this.state.shooters.map((b, i) => <Shooter
+					key = {['shooter', i].join('.')}
+					data={b}
+				/>)}
 			</Layer>
 			<Layer id='bullets' {...this.state.layer}>
-				{this.state.bullets.map((b, i) => {
-					return (
-						<Rect
-							key = {['bullet', i].join('.')}
-							x={b.x}
-							y={b.y}
-							width={5}
-							height={2}
-							fill='#080808'
-							rotation={b.angle}
-						/>
-						
-					)
-				})}
+				{this.state.bullets.map((b, i) => <Bullet
+					key = {['bullet', i].join('.')}
+					data={b}
+				/>)}
 			</Layer>
 		</Stage>
 	}
 }
-
-export default Canvas;
