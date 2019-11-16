@@ -16,18 +16,33 @@ class Canvas extends React.Component {
 			layer: {
 				fill: 'green'
 			},
-			circle: {
-				x: 1920 / 2,
-				y: 1080 / 2,
-				draggable: true,
-				radius: 20,
-				fill: Konva.Util.getRandomColor()
-			}
+			shooters: [
+				{
+					x: 20,
+					y: 20
+				}
+			],
+			bullets: [
+				{
+					x: 30,
+					y: 30,
+					angle: 45
+				},
+				{
+					x: 35,
+					y: 35,
+					angle: 45
+				},
+				{
+					x: 40,
+					y: 40,
+					angle: 45
+				}
+			]
 		}
 	}
 
 	componentDidMount() {
-		console.log(this.refs);
 		const canvas = this.refs.canvas;
 		this.checkSize();
 		window.addEventListener('resize', this.checkSize);
@@ -64,12 +79,52 @@ class Canvas extends React.Component {
 					y={0}
 					width={this.state.surface.width}
 					height={this.state.surface.height}
-					fill='green'
+					fill='#608038'
+					style={{
+						display: 'none'
+					}}
 				/>
 			</Layer>
-			<Layer {...this.state.layer}>
-				<Circle {...this.state.circle}/>
-				<Text text='Hello world'/>
+			<Layer id='shooters' {...this.state.layer}>
+				<Circle
+					x={this.state.surface.width / 2}
+					y={this.state.surface.height / 2}
+					width={20}
+					height={20}
+					fill={Konva.Util.getRandomColor()}
+					draggable={true}
+				/>				
+				{this.state.shooters.map((b, i) => {
+					return (
+						<Circle
+							key = {['shooter', i].join('.')}
+							x={b.x}
+							y={b.y}
+							width={20}
+							height={20}
+							fill='dark green'
+							rotation={b.angle}
+							draggable={true}
+						/>
+						
+					)
+				})}
+			</Layer>
+			<Layer id='bullets' {...this.state.layer}>
+				{this.state.bullets.map((b, i) => {
+					return (
+						<Rect
+							key = {['bullet', i].join('.')}
+							x={b.x}
+							y={b.y}
+							width={5}
+							height={2}
+							fill='#080808'
+							rotation={b.angle}
+						/>
+						
+					)
+				})}
 			</Layer>
 		</Stage>
 	}
