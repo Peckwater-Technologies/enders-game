@@ -1,5 +1,7 @@
 import React from 'react';
 import {Rect} from 'react-konva';
+import config from '../config.json';
+const {bullet} = config;
 
 export default class Bullet extends React.Component {
 
@@ -9,9 +11,9 @@ export default class Bullet extends React.Component {
 			<Rect
 				x={b.x}
 				y={b.y}
-				width={5}
-				height={2}
-				fill='#080808'
+				width={bullet.width}
+				height={bullet.height}
+				fill={bullet.colour}
 				rotation={b.angle}
 			/>
 		)
