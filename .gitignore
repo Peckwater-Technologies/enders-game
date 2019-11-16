@@ -1,3 +1,4 @@
 node_modules/
 backend/dist
 backend/yarn-error.log
+.DS_Store

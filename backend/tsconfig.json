@@ -12,5 +12,8 @@
       "*": ["node_modules/*"]
     }
   },
-  "include": ["src/**/*"]
+  "include": [
+    "src/**/*",
+    "../frontend/src/shared/**/*"
+  ]
 }
