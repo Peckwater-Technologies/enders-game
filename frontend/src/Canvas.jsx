@@ -59,12 +59,12 @@ export default class Canvas extends React.Component {
 		window.removeEventListener('resize', this.checkSize);
 	}
 
-	checkSize = () => {
+	checkSize () {
 		let state = this.state;
 		state.surface.width = window.innerWidth;
 		state.surface.height = window.innerHeight;
 		this.setState(state);
-	};
+	}
 
 	componentDidUpdate() {
 		console.log(this.refs);
