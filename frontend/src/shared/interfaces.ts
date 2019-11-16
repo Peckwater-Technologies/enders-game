@@ -57,8 +57,8 @@ interface ShooterAction extends GameAction {
   speed: number;
 }
 
-class DumbAgent implements Agent<ShooterState, ShooterAction> {
-  act(state: ShooterState): ShooterAction {
+class DumbAgent implements Agent<ShooterObservation, ShooterAction> {
+  act(state: ShooterObservation): ShooterAction {
     return {
       fireBullet: true,
       angle: 0,
