@@ -19,7 +19,11 @@ var agent1 = new DumbAgent();
 var agent2 = new DumbAgent();
 
 function computeVision(x: number, y: number, angle: number, spread: number, no_sensors: number): Array<number> {
-
+  var slice = spread / no_sensors;
+  var ray_angle = angle - (spread / 2);
+  for(let i = 0; i < no_sensors; i++) {
+    
+  }
 }
 while(true) {
   var vision1 = ShooterObservation {
