@@ -1,4 +1,9 @@
 {
+	"shooter": {
+		"width": 20,
+		"height": 20,
+		"colour": "dark green"
+	},
 	"bullet": {
 		"width": 5,
 		"height": 2,
