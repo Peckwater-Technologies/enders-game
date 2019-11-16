@@ -1,26 +1,26 @@
-// @ts-ignore 
-interface GameState {
+// @ts-ignore
+export interface GameState {
 
 }
 
-interface GameAction {
+export interface GameAction {
 
 }
 
-interface GameObservation {
+export interface GameObservation {
 
 }
 
-interface Agent<Observation extends GameObservation, Action extends GameAction> {
+export interface Agent<Observation extends GameObservation, Action extends GameAction> {
   act(observation: Observation): Action;
 }
 
 
-interface Renderer<State extends GameState> {
+export interface Renderer<State extends GameState> {
   render(state: State): void;
 }
 
-interface Game<State extends GameState> {
+export interface Game<State extends GameState> {
   initialState: (seed: number) => State;
   renderer: Renderer<State>;
 }
