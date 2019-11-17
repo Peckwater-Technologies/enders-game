@@ -40,7 +40,7 @@ export default class Canvas extends React.Component {
 		let [actual, centreX, centreY, rangeX, rangeY] = this.getScale(state);
 		state = Object.assign(state, {
 			scale: Math.min(Math.min((this.state.scale + actual) / 2), GameOptions.gameWidth / config.minWidth),
-			minX, minY
+			centreX, centreY, rangeX, rangeY
 		});
 		this.setState(state);
 	}
@@ -92,12 +92,15 @@ export default class Canvas extends React.Component {
 	}
 
 	render() {
-		let theoreticalX = GameOptions.gameWidth / this.state.scale;
-		let calculatedXOffset = Math.min(this.state.minX, GameOptions.gameWidth - theoreticalX);
-		let theoreticalY = GameOptions.gameHeight / this.state.scale;
-		let calculatedYOffset = Math.min(this.state.minY, GameOptions.gameHeight - theoreticalY);
+		//so the critical value is the range, determines the size of the box
+		let rangeX = Math.max(this.state.rangeX, config.minWidth);
+		let rangeY = Math.max(this.state.rangeY, config.minWidth * (this.state.surface.height / this.state.surface.width));
+		//once there, determine the top-left corner of the box
+		let offsetX = Math.min(this.state.centreX - rangeX / 2 - 30);
+		let offsetY = Math.min(this.state.centreY - rangeY / 2 - 30);
+		let theoreticalX = rangeX + 60;
+		let theoreticalY = rangeY + 60;
 		
-		console.log(theoreticalX, theoreticalY, this.state.scale);
 		return <Stage {...this.state.surface} /*
 			x={-calculatedXOffset}
 			y={-calculatedYOffset}
@@ -143,15 +146,16 @@ export default class Canvas extends React.Component {
 				<Rect
 					width={theoreticalX}
 					height={theoreticalY}
-					x={calculatedXOffset}
-					y={calculatedYOffset}
+					x={offsetX}
+					y={offsetY}
 					strokeWidth={10}
 					stroke='black'
 				/>
 				<Text x={0} y={0} fontSize={100} text={`
 				Size: (${theoreticalX}, ${theoreticalY})
-				Offset: (${calculatedXOffset}, ${calculatedYOffset})
-				Minimum: (${this.state.minX}, ${this.state.minY})
+				Offset: (${offsetX}, ${offsetY})
+				Centre: (${this.state.centreX}, ${this.state.centreY})
+				Range: (${rangeX}, ${rangeY})
 				`}/>
 			</Layer>
 		</Stage>
