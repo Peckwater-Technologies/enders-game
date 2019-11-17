@@ -3,7 +3,7 @@ import { ShooterAction, ShooterState, ShooterObservation, GameOptions, Player, B
 
 const delta = 1 / GameOptions.fps;
 
-export class ShooterGame implements Game<ShooterState, ShooterAction, ShooterObservation> {
+export const ShooterGame: Game<ShooterState, ShooterAction, ShooterObservation> = {
 
   createState(seed: number): ShooterState {
     //it's possible to do something more intelligent here after adding obstacles
@@ -41,7 +41,7 @@ export class ShooterGame implements Game<ShooterState, ShooterAction, ShooterObs
       bullets: [],
       obstacles: [tree, rock],
     };
-  }
+  },
 
   updateState(state: ShooterState, actions: ShooterAction[]): StateUpdate<ShooterState> {
     const n = state.players.length;
@@ -111,7 +111,7 @@ export class ShooterGame implements Game<ShooterState, ShooterAction, ShooterObs
       isDone: done,
       reward: damagePerPlayer.map(x => -x),
     };
-  }
+  },
 
   generateObservation(state: ShooterState, agentIdx: number): ShooterObservation {
     let agent = state.players[agentIdx];
@@ -162,9 +162,9 @@ export class ShooterGame implements Game<ShooterState, ShooterAction, ShooterObs
       bulletSensors: bulletSensors,
       obstacleSensors: [], //TODO
     };
-  }
+  },
 
-  observationSize: number = 5 + 3 * GameOptions.noSensors;
+  observationSize: 5 + 3 * GameOptions.noSensors,
   getData(observation: ShooterObservation): number[] {
     return [
       observation.x,
@@ -176,9 +176,9 @@ export class ShooterGame implements Game<ShooterState, ShooterAction, ShooterObs
       ...observation.enemySensors,
       ...observation.bulletSensors,
     ];
-  }
+  },
 
-  actionSize: number = 4;
+  actionSize: 4,
   getAction(data: number[]): ShooterAction {
     return {
       fireBullet: data[0] > 0.5,
@@ -187,7 +187,6 @@ export class ShooterGame implements Game<ShooterState, ShooterAction, ShooterObs
       moveForward: data[3] > 0.5,
     }
   }
-
 }
 
 function detectCollision(player: Player, bullet: Bullet, player_id: number) {

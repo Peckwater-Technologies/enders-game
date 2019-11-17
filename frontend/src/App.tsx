@@ -13,10 +13,8 @@ class App extends React.Component {
 
 		let agent1 = new DumbAgent();
 		let agent2 = new StampedeBot();
-		let shooterGame = new ShooterGame();
 
-		gameLoop(shooterGame,
-			[agent1, agent2],
+		gameLoop(ShooterGame, [agent1, agent2],
 			{ render: state => ref.current && ref.current.updateState(state) },
 			GameOptions.fps
 		)
