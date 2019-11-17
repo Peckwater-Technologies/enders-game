@@ -7,7 +7,6 @@ body {
 div.Header {
 	background-color: #ffffff;
 	position: fixed;
-	z-index: 1;
 	left: -10vw;
 	width: 120vw;
 	height: 14.5vh;
@@ -22,6 +21,7 @@ div.Header {
 div.Header img#mlh {
 	height: 20vh;
 	padding: 40px 0 0 0;
+	z-index: 1
 }
 
 div.Header a > h1 {
@@ -65,6 +65,32 @@ div.Column {
 	flex-direction: column;
 }
 
+div.konvajs-content {
+	z-index: 1 !important;
+}
+
+.App.growing {
+	width: 100vw;
+	opacity: 0;
+	transition-delay: 0.5s;
+}
+
+.App.full-screen {
+	width: 100vw;
+	z-index: 100;
+	margin: 0;
+	border-radius: 0;
+	margin: inital;
+	transition-delay: 0.5s;
+	opacity: 1;
+}
+div.App.shrinking {
+	transition-delay: 0s;
+	transition: 0.5s;
+	opacity: 0;
+	display: block;
+}
+
 div.App {
 	height: 80vh;
 	background-color: #835C3B;
@@ -79,27 +105,4 @@ div.App > div, div.konvajs-content {
 canvas {
 	height: 100% !important;
 	width: 100% !important;
-	&.growing {
-		height: auto;
-		margin: 0;
-		opacity: 0;
-		transition-delay: 0.5s;
-	}
-	&.full-screen {
-		height: 100vh;
-		z-index: 100;
-		margin: 0;
-		border-radius: 0;		
-		height: auto;
-		width: auto;
-		margin: inital;
-		transition-delay: 0.5s;
-		opacity: 1;
-	}
-	&.shrinking {
-		transition-delay: 0s;
-		transition: 0.5s;
-		opacity: 0;
-		display: block;
-	}
 }

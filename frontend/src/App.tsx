@@ -3,7 +3,6 @@ import Canvas from './Canvas';
 import Header from './Header';
 import './App.scss';
 import { DumbAgent, StampedeBot, realPlayer } from './shared/dumb_bot';
-import { MappedRLNetBot } from './shared/rl_bot';
 import { gameLoop } from './shared/gameLoop';
 import { GameOptions } from './shared/shooter_interfaces';
 import { ShooterGame } from './shared/shooter_imp';
@@ -24,10 +23,37 @@ class App extends React.Component<{}, {
 			growing: false,
 			full_screen: false
 		}
+		this.handleClick = this.handleClick.bind(this);
 	}
 
 	// private playerAgent = new RealPlayer()
 	private player = realPlayer();
+
+	handleClick() {
+		if (!this.state.growing) {
+			this.setState({
+				growing: true,
+				shrinking: false
+			});
+			setTimeout(() => {
+				this.setState({
+					growing: false,
+					full_screen: true
+				})
+			}, 1000);
+		}
+		else setTimeout(() => {
+			this.setState({
+				growing: false,
+				shrinking: true
+			});
+			this.setState({
+				shrinking: false,
+				full_screen: false
+			})
+		}, 1000);
+
+	}
 
 	componentDidMount(){
 		document.addEventListener("keydown", this.player[1]);
@@ -36,9 +62,7 @@ class App extends React.Component<{}, {
 		let expando = <img
 			className='expando'
 			src={expando_img}
-			onClick={() => {
-				console.log('hello world');
-			}}
+			onClick={this.handleClick}
 		/>;
 		this.setState({
 			expando
@@ -61,6 +85,10 @@ class App extends React.Component<{}, {
 			},
 			GameOptions.fps
 		)
+		let name = 'App';
+		if (this.state.growing) name += '.growing';
+		if (this.state.shrinking) name += '.shrinking';
+		if (this.state.full_screen) name += '.full-screen';
 		return (
 			<>
 				<div className='Background'>
@@ -70,12 +98,17 @@ class App extends React.Component<{}, {
 				<br />
 				<div className='Column'>
 					<div
-						className={'App' + (this.state.growing ? '.growing' ? this.state.shrinking : '.shrinking' ? this.state.full_screen : '.full-screen' : '')}
+						className={name}
 						id='container'
 						ref='container'
 					>
 						{<Canvas ref={ref}/>}
-						{this.state.expando}
+						{/*this.state.expando*/}
+					</div>
+					<div id='container'>
+						<h2>
+							Our story
+						</h2>
 					</div>
 				</div>
 			</>			
