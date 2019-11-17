@@ -1,0 +1,21 @@
+{
+  "files": {
+    "main.css": "/enders-game/static/css/main.85b1ac6a.chunk.css",
+    "main.js": "/enders-game/static/js/main.8097a658.chunk.js",
+    "main.js.map": "/enders-game/static/js/main.8097a658.chunk.js.map",
+    "runtime-main.js": "/enders-game/static/js/runtime-main.933d4f2b.js",
+    "runtime-main.js.map": "/enders-game/static/js/runtime-main.933d4f2b.js.map",
+    "static/js/2.9562b981.chunk.js": "/enders-game/static/js/2.9562b981.chunk.js",
+    "static/js/2.9562b981.chunk.js.map": "/enders-game/static/js/2.9562b981.chunk.js.map",
+    "index.html": "/enders-game/index.html",
+    "precache-manifest.90405fa8f08b5cafbdcfd68aeccd977c.js": "/enders-game/precache-manifest.90405fa8f08b5cafbdcfd68aeccd977c.js",
+    "service-worker.js": "/enders-game/service-worker.js",
+    "static/css/main.85b1ac6a.chunk.css.map": "/enders-game/static/css/main.85b1ac6a.chunk.css.map"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.933d4f2b.js",
+    "static/js/2.9562b981.chunk.js",
+    "static/css/main.85b1ac6a.chunk.css",
+    "static/js/main.8097a658.chunk.js"
+  ]
+}
