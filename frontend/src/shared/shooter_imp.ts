@@ -228,18 +228,20 @@ function moveObject<T extends { x: number, y: number, angle: number }>(object: T
   }
 
   for(let obstacle of obstacles) {
+    let stepx = 0.05 * (obstacle.x - x)
+    let stepy = 0.05 * (obstacle.y - y)
     switch(obstacle.shape) {
       case ObstacleShape.Circle:
-        while(radius + obstacle.size > Math.hypot(x - obstacle.x, y - obstacle.y) + 0.01){
-          x = 0.5 * (obstacle.x + x);
-          y = 0.5 * (obstacle.y + y);
+        while(radius + obstacle.size > Math.hypot(x - obstacle.x, y - obstacle.y) + 0.1){
+          x += stepx;
+          y += stepy;
         }
         break;
       case ObstacleShape.Square:
         //TODO it does the same what circle
-        while(radius + obstacle.size > Math.hypot(x - obstacle.x, y - obstacle.y) + 0.01){
-          x = 0.5 * (obstacle.x + x);
-          y = 0.5 * (obstacle.y + y);
+        while(radius + obstacle.size > Math.hypot(x - obstacle.x, y - obstacle.y) + 0.1){
+          x += stepx;
+          y += stepy;
         }
         break;
     }
