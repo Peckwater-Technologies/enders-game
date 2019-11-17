@@ -31,7 +31,8 @@ export interface Player {
   x: number,
   y: number,
   angle: number,
-  cooldown: number,
+	cooldown: number,
+	health: number,
 }
 
 export interface Bullet {
@@ -58,6 +59,7 @@ export interface ShooterObservation extends GameObservation {
 	y: number;
 	angle: number;
 	cooldown: number; // seconds left
+	health: number;
 
 	// Sensors are 0 or 1 (indicating presence)
 	enemySensors: Array < number > ;
