@@ -22,7 +22,7 @@ export interface Renderer<State extends GameState> {
 export interface Game<State extends GameState, Action extends GameAction, Observation extends GameObservation> {
   createState: (seed: number) => State;
   generateObservation: (state: State, agentIdx: number) => Observation;
-  updateState: (state: State, actions: Action[]) => State;
+  updateState: (state: State, actions: Action[], dt: number) => State;
 }
 
 /// EXAMPLE --- shooterRenderer.ts
