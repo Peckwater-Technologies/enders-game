@@ -12,11 +12,27 @@ export class DumbAgent implements Agent<ShooterObservation, ShooterAction> {
   }
 }
 
-class StampedeBot implements Agent<ShooterObservation, ShooterAction> {
+export class StampedeBot implements Agent<ShooterObservation, ShooterAction> {
   act(state: ShooterObservation): ShooterAction {
     let isEnemyInFront = state.enemySensors[0] == 1;
     return {
       fireBullet: isEnemyInFront,
+      turnLeft: !isEnemyInFront,
+      turnRight: false,
+      moveForward: isEnemyInFront,
+    };
+  }
+}
+
+export class RealPlayer implements Agent<ShooterObservation, ShooterAction> {
+
+  constructor() {
+
+  }
+
+  act(state: ShooterObservation): ShooterAction {
+    return {
+      fireBullet: true,
       turnLeft: !isEnemyInFront,
       turnRight: false,
       moveForward: isEnemyInFront,
