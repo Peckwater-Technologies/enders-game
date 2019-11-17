@@ -1,45 +1,31 @@
 import React from 'react';
 import Canvas from './Canvas';
 import './App.css';
-import { DumbAgent, StampedeBot } from './shared/dumb_bot';
+import { DumbAgent, StampedeBot, realPlayer } from './shared/dumb_bot';
 import { gameLoop } from './shared/gameLoop';
 import { GameOptions } from './shared/shooter_interfaces';
 import { ShooterGame } from './shared/shooter_imp';
 
 class App extends React.Component {
 
-	handleKeyPress(event: React.KeyboardEvent<HTMLDivElement>): void {
-		console.log('hello world');
-		console.log(event);
-		if (event.keyCode === 38) {
-			// up arrow
-		}
-		else
-		if (event.keyCode === 40) {
-			// down arrow
-		}
-		else
-		if (event.keyCode === 37) {
-		   // left arrow
-		}
-		else
-		if (event.keyCode === 39) {
-		   // right arrow
-		}
-	}
+	// private playerAgent = new RealPlayer()
+	private player = realPlayer();
 
 	componentDidMount(){
-		// document.addEventListener("keydown", this.handleKeyPress, false);
+		document.addEventListener("keydown", this.player[1]);
+		document.addEventListener("keyup", this.player[0]);
 	}
 	
 	componentWillUnmount(){
-		// document.removeEventListener("keydown", this.handleKeyPress, false);
+		document.removeEventListener("keydown", this.player[1]);
+		document.removeEventListener("keyup", this.player[0]);
 	}
 
 	render() {
 		let ref = React.createRef<Canvas>();
 
-		let agent1 = new DumbAgent();
+		// let agent1 = this.playerAgent;
+		let agent1 = this.player[2];
 		let agent2 = new StampedeBot();
 
 		gameLoop(ShooterGame, [agent1, agent2],
@@ -48,15 +34,12 @@ class App extends React.Component {
 		)
 
 		return <div
-			className="App"
-			onKeyPress={this.handleKeyPress}
-			onKeyDown={this.handleKeyPress}
-			onKeyUp={this.handleKeyPress}
-			id='container'
-			ref='container'
-		> {
-			<Canvas ref={ref} />
-		} </div>;
+				className="App"
+				id='container'
+				ref='container'
+			>
+			{ <Canvas ref={ref} /> }
+		</div>;
 	}
 }
 
