@@ -1,4 +1,5 @@
 {
+	"frameRate": 100,
 	"background": {
 		"colour": "#608038",
 		"x": 0,
