@@ -37,8 +37,10 @@ export default class Canvas extends React.Component {
 
 	updateState(ShooterState) {
 		let state = Object.assign(this.state, ShooterState);
+		let [actual, minX, minY] = this.getScale(state);
 		state = Object.assign(state, {
-			scale: (this.state.scale + this.getScale(state)) / 2
+			scale: (this.state.scale + actual) / 2,
+			minX, minY
 		});
 		this.setState(state);
 	}
@@ -72,21 +74,28 @@ export default class Canvas extends React.Component {
 
 	getScale(state) {
 		let xs = state.players.map(b => b.x);
-		let rangeX = Math.max(...xs) - Math.min(...xs) + 20;
+		let minX = Math.min(...xs);
+		let rangeX = Math.max(...xs) - minX;
 		let ys = state.players.map(b => b.y);
-		let rangeY = Math.max(...ys) - Math.min(...ys) + 20;
-		let scaleX = state.surface.width / rangeX;
-		let scaleY = state.surface.height / rangeY;
+		let minY = Math.min(...ys);
+		let rangeY = Math.max(...ys) - minY;
+		let scaleX = state.surface.width / (rangeX + 20);
+		let scaleY = state.surface.height / (rangeY + 20);
 		//accounts for limits of zoom out
+		//let centreX = b.x + 0.5 + rangeX;
+		//let centreY = b.y + 0.5 + rangeY;
 		let scale = Math.max(Math.min(scaleX, scaleY), state.surface.width / GameOptions.gameWidth, state.surface.height / GameOptions.gameHeight);
 		if (isNaN(scale)) scale = 1;
-		return scale;
+		return [scale, Math.max(minX - 20, 0), Math.max(minY - 20, 0)];
 	}
 
 	render() {
-		return <Stage {...this.state.surface} scale={{
+		console.log(this.state.minX, this.state.minY);
+		return <Stage {...this.state.surface} x={this.state.minX} y={this.state.minY} scale={{
 			x: this.state.scale,
-			y: this.state.scale
+			y: this.state.scale,
+			width: this.state.surface.width,
+			height: this.state.surface.height
 		}}>
 			<Layer id='background'>				
 				<Rect
