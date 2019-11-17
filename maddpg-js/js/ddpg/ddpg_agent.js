@@ -108,6 +108,7 @@ class DDPGAgent {
     async play(){
         // Get the current state
         const state = this.env.getState().linear;
+        console.log(state)
         // Pick an action
         const tfActions = await this.ddpg.predict(tf.tensor2d([state]));
         let buf = await tfActions.buffer()
@@ -142,7 +143,9 @@ class DDPGAgent {
         // Step in the environment with theses actions
         let buf = await tfActions.buffer();
         let mAcions = buf.values;
-        let mReward = await this.env.step([mAcions[0], mAcions[1]]);
+        console.log(mAcions)
+        let mReward = await this.env.step([mAcions[0], mAcions[1]],  tfPreviousStep.dataSync()[0]);
+        console.log(mReward);
         this.rewardsList.push(mReward);
         // Get the new observations
         let mState = await this.env.getState().linear;
