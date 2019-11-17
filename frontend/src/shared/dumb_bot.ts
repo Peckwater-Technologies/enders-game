@@ -12,7 +12,7 @@ export class DumbAgent implements Agent<ShooterObservation, ShooterAction> {
   }
 }
 
-class StampedeBot implements Agent<ShooterObservation, ShooterAction> {
+export class StampedeBot implements Agent<ShooterObservation, ShooterAction> {
   act(state: ShooterObservation): ShooterAction {
     let isEnemyInFront = state.enemySensors[0] == 1;
     return {
