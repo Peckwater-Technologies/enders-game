@@ -5,14 +5,14 @@ export class DumbAgent implements Agent<ShooterObservation, ShooterAction> {
   act(state: ShooterObservation): ShooterAction {
     return {
       fireBullet: true,
-      turnLeft: true,
+      turnLeft: false,
       turnRight: false,
       moveForward: true,
     };
   }
 }
 
-class StampedeBot implements Agent<ShooterObservation, ShooterAction> {
+export class StampedeBot implements Agent<ShooterObservation, ShooterAction> {
   act(state: ShooterObservation): ShooterAction {
     let isEnemyInFront = state.enemySensors[0] == 1;
     return {
