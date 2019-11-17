@@ -1,6 +1,6 @@
 import * as tf from "@tensorflow/tfjs";
 
-export async function modelToJson(model: tf.Sequential): Promise<string> {
+export async function modelToJson(model: tf.LayersModel): Promise<string> {
   let res: string = null;
   await model.save(tf.io.withSaveHandler(async (artifacts: tf.io.ModelArtifacts) => {
     res = artifactsToJSON(artifacts);
