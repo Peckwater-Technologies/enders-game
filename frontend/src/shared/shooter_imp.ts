@@ -214,8 +214,8 @@ function moveObject<T extends { x: number, y: number, angle: number }>(object: T
   }
 
   for(let obstacle of obstacles) {
-    let stepx = 0.05 * (obstacle.x - x)
-    let stepy = 0.05 * (obstacle.y - y)
+    let stepx = 0.05 * (x - obstacle.x)
+    let stepy = 0.05 * (y - obstacle.y)
     switch(obstacle.shape) {
       case ObstacleShape.Circle:
         while(radius + obstacle.size > Math.hypot(x - obstacle.x, y - obstacle.y) + 0.1){
