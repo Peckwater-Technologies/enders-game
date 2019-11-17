@@ -33,8 +33,8 @@ export default class Canvas extends React.Component {
 
 	}
 
-	updateState(assignee) {
-		let state = Object.assign(this.state, assignee);
+	updateState(ShooterState) {
+		let state = Object.assign(this.state, ShooterState);
 		this.setState(state);
 	}
 
