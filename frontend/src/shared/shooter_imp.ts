@@ -62,6 +62,8 @@ class ShooterGame implements Game<ShooterState, ShooterAction, ShooterObservatio
       }
     }
     state.bullets = newbullets;
+    state.cooldown -= dt;
+    if(state.cooldown < 0) {state.cooldown = 0;}
     return state;
   }
 
@@ -73,26 +75,44 @@ class ShooterGame implements Game<ShooterState, ShooterAction, ShooterObservatio
     let cooldown = agent.cooldown;
 
     let sensorSpread = 360 / GameOptions.noSensors;
+
+    let enemySensors = [];
+    let bulletSensors = [];
     for(let i = 0; i < GameOptions.noSensors; i++) {
       let sensorAngle = (angle + i * sensorSpread) / 180 * Math.PI;
-      let halfsidevector = [Math.cos(sensorAngle + Math.PI / 2) * GameOptions.playerRadius, Math.sin(sensorAngle + Math.PI / 2) * GameOptions.playerRadius];
-      let longsidevector = [Math.cos(sensorAngle) * (GameOptions.playerRadius+GameOptions.sensorRadius), Math.sin(sensorAngle) *(GameOptions.playerRadius+GameOptions.sensorRadius)]
-      let a = [x + halfsidevector[0], y + halfsidevector[1]];
-      let b = [x - halfsidevector[0], y - halfsidevector[1]];
-      let c = [b[0] + longsidevector[0], b[1] + longsidevector[1]];
-      let d = [a[0] + longsidevector[0], a[1] + longsidevector[1]];
-      let detectionRectangle = [a, b, c, d];
+      let halfsidevector = [Math.cos(sensorAngle + Math.PI / 2), Math.sin(sensorAngle + Math.PI / 2)];
+      let longsidevector = [Math.cos(sensorAngle), Math.sin(sensorAngle)];
+      let playerDetectionRectangle = rectangle(x, y, GameOptions.playerRadius, halfsidevector, longsidevector);
+      let bulletDetectionRectangle = rectangle(x, y, GameOptions.bulletRadius, halfsidevector, longsidevector);
 
+      let enemyDetected = 0;
+      let bulletDetected = 0;
+      let n = state.players.length;
+      for(let j = 0; j < n; j ++) {
+        if(j == agentIdx) {continue;}
+        if(isInside(playerDetectionRectangle, [state.players[j].x, state.players[j].y])){
+          enemyDetected = 1;
+          break;
+        }
+      }
+      for(var bullet of state.bullets) {
+        if(bullet.sourceAgent != agentIdx && isInside(bulletDetectionRectangle, bullet.x, bullet.y)) {
+          bulletDetected = 1;
+          break;
+        }
+      }
+      enemySensors.push(enemyDetected);
+      bulletSensors.push(bulletDetectd);
     }
     return {
-      x: 0,
-      y: 0,
-      angle: 0,
-      cooldown: 0, // seconds left
+      x: x,
+      y: y,
+      angle: angle,
+      cooldown: cooldown, // seconds left
 
       // Sensors are 0 or 1 (indicating presence)
-      enemySensors: [0],
-      bulletSensors: [0],
+      enemySensors: enemySensors,
+      bulletSensors: bulletSensors,
     };
   }
 }
@@ -125,6 +145,24 @@ function moveObject<T extends { x: number, y: number, angle: number }>(object: T
   };
 }
 
-function isSensorDetecting<T extends {x: number, y:number}>(source: T, object: T, angle: number, radiusOfObject: number) {
-  let detectionRectangle = [[], []]
+//https://math.stackexchange.com/questions/190111/how-to-check-if-a-point-is-inside-a-rectangle
+function isInside(rectangle: Array<[number, number]>, point: [number, number]) {
+  let AM = [point[0] - rectangle[0][0], point[1] - rectangle[0][1]];
+  let AB = [rectangle[1][0] - rectangle[0][0], rectangle[1][1] - rectangle[0][1]];
+  let AD = [rectangle[3[0] - rectangle[0][0], rectangle[3][1] - rectangle[0][1]];
+  let AMdotAB = Math.dot(AM, AB);
+  let AB2 = Math.dot(AB, AB);
+  let AMdotAD = Math.dot(AM, AD);
+  let AD2 = Math.dot(AD, AD);
+  return (0 < AMdotAB && AMdotAB < AB2 && 0 < AMdotAD && AMdotAD < AD2);
+}
+
+function rectangle(x: number, y: number, radius: number, shortvector: [number, number], longvector[number, number]) {
+  let halfsidevector = [shortvector[0] * radius, shortvector[1] * radius];
+  let longsidevector = [longvector[0] * (radius+GameOptions.sensorRadius), longvector[1] *(radius+GameOptions.sensorRadius)]
+  let a = [x + halfsidevector[0], y + halfsidevector[1]];
+  let b = [x - halfsidevector[0], y - halfsidevector[1]];
+  let c = [b[0] + longsidevector[0], b[1] + longsidevector[1]];
+  let d = [a[0] + longsidevector[0], a[1] + longsidevector[1]];
+  return [a, b, c, d];
 }
