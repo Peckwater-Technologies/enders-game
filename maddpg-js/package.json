@@ -1,0 +1,19 @@
+{
+  "name": "maddpg",
+  "version": "1.0.0",
+  "description": "Implementation of MADDPG",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@tensorflow/tfjs": "^1.3.2",
+    "seedrandom": "^3.0.5",
+    "tfjs": "^0.6.0"
+  },
+  "devDependencies": {
+    "eslint": "^6.6.0"
+  }
+}
