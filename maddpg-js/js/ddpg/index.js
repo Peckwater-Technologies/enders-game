@@ -20,14 +20,22 @@ class level{
     shuffle(){
 
     }
-    step(){
-
+    step(action_prev, prev_state, action_current){
+        console.log(prev_state)
+        if(prev_state > 0.5){
+            return action_prev[0] - action_prev[1];
+        }
+        if(prev_state < 0.5){
+            return action_prev[1] - action_prev[0];
+        }
+        return -0.5
+       
     }
     getState(){
         let nState = {};
         let linear = [];
-        for(let i = 0; i < 26; i++){
-            linear.push(1);
+        for(let i = 0; i < 1; i++){
+            linear.push( Math.round(Math.random()) );
         }
         nState.linear = linear;
         return nState;
@@ -39,7 +47,7 @@ var env = new level();
 
 // js/DDPG/ddpg.js
 var agent = new DDPGAgent(env, {
-    stateSize: 26
+    stateSize: 1
 });
 
 
@@ -49,10 +57,6 @@ let it = 0;
 env.loop(() => {
     let state = env.getState();
     let reward = env.getLastReward();
-    const qValue = agent.getQvalue(state.linear, [state.a, state.steering]);
-    if (it % 10 == 0)
-        console.log(("realtime_viewer", [qValue, state.a, state.steering], reward, ["Q(a, s)", "Acceleration", "Steering Angle"]));
-    it += 1;
 });
 
 env.load().then(async () => {

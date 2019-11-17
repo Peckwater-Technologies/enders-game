@@ -25,11 +25,9 @@ class DDPG {
         this.memory = memory;
         this.noise = noise;
         this.config = config;
-        this.tfGamma = tf.scalar(config.gamma);
 
         // Inputs
-        this.obsInput = tf.input({batchShape: [null, this.config.stateSize]});
-        this.actionInput = tf.input({batchShape: [null, this.config.nbActions]});
+        
 
         // Randomly Initialize actor network μ(s)
         
@@ -42,41 +40,38 @@ class DDPG {
         
     }
     async init(){
+        this.obsInput = await tf.input({batchShape: [null, this.config.stateSize]});
+        this.actionInput =  await tf.input({batchShape: [null, this.config.nbActions]});
         await this.actor.buildModel(this.obsInput);
         await this.critic.buildModel(this.obsInput, this.actionInput);
-        await copyModel(this.actor, Actor)
-        .then((data) => this.actorTarget = data);
-        await copyModel(this.critic, Critic)
-        .then((data) => this.criticTarget = data);
-        // Perturbed Actor (See parameter space noise Exploration paper)
-        await copyModel(this.actor, Actor)
-        .then((data) => this.perturbedActor = data);
-        //this.adaptivePerturbedActor = copyModel(this.actor, Actor);
-
+        this.actorTarget = await copyModel(this.actor, Actor);
+        this.criticTarget = await copyModel(this.critic, Critic);
+        this.perturbedActor = await copyModel(this.actor, Actor)
+        this.tfGamma = tf.scalar(this.config.gamma);
         await this.setLearningOp();
     }
 
     async setLearningOp(){
-        this.criticWithActor = async (tfState) => {
-            const tfAct = await this.actor.predict(tfState);
-            return await this.critic.predict(tfState, tfAct);
+        this.criticWithActor = (tfState) => {
+            const tfAct =  this.actor.predict(tfState);
+            return this.critic.predict(tfState, tfAct);
         };
-        this.criticTargetWithActorTarget = async (tfState) => {
-            const tfAct = await this.actorTarget.predict(tfState);
-            return await this.criticTarget.predict(tfState, tfAct);
+        this.criticTargetWithActorTarget = (tfState) => {
+            const tfAct = this.actorTarget.predict(tfState);
+            return this.criticTarget.predict(tfState, tfAct);
         };
 
-        this.actorOptimiser = await tf.train.adam(this.config.actorLr);
-        this.criticOptimiser = await tf.train.adam(this.config.criticLr);
+        this.actorOptimiser = tf.train.adam(this.config.actorLr);
+        this.criticOptimiser = tf.train.adam(this.config.criticLr);
 
         this.criticWeights = [];
         for (let w = 0; w < this.critic.model.trainableWeights.length; w++){
-            await this.criticWeights.push(this.critic.model.trainableWeights[w].val);
+            this.criticWeights.push(this.critic.model.trainableWeights[w].val);
         }
         console.log(this.criticWeights);
         this.actorWeights = [];
         for (let w = 0; w < this.actor.model.trainableWeights.length; w++){
-            await this.actorWeights.push(await this.actor.model.trainableWeights[w].val);
+            this.actorWeights.push(this.actor.model.trainableWeights[w].val);
         }
 
         await assignAndStd(this.actor, this.perturbedActor, this.noise.currentStddev, this.config.seed);
@@ -109,7 +104,7 @@ class DDPG {
         let distanceV = null;
 
         if (batch.obs0.length > 0){
-            const tfObs0 = await tf.tensor2d(batch.obs0);
+            const tfObs0 = tf.tensor2d(batch.obs0);
             const distance = await this.distanceMeasure(tfObs0);
     
             await assignAndStd(this.actor, this.perturbedActor, this.noise.currentStddev, this.config.seed);
@@ -127,8 +122,8 @@ class DDPG {
      * @param action [a, steering]
      */
     async getQvalue(state, a){
-        const st = await tf.tensor2d([state]);
-        const tfa = await tf.tensor2d([a]);
+        const st = tf.tensor2d([state]);
+        const tfa = tf.tensor2d([a]);
         const q = await this.critic.model.predict([st, tfa]);
         let buf = await q.buffer();
         const v = buf.values
@@ -168,19 +163,16 @@ class DDPG {
     async trainCritic(batch, tfActions, tfObs0, tfObs1, tfRewards, tfTerminals){
 
         let costs; 
-        const criticLoss = await this.criticOptimiser.minimize(() => {
-                
-                const tfQPredictions0 = this.critic.model.predict([tfObs0, tfActions]).dataSync()
-                const tfQPredictions1 = this.criticTargetWithActorTarget(tfObs1)
-                
-                const a2 = tf.mul(tf.mul(tf.sub(tf.scalar(1),tfTerminals),this.tfGamma),tfQPredictions1)
-                const tfQTargets = tfRewards.add(a2)
-        
-                const a5 = tf.sub(tfQTargets, tfQPredictions0)
-                const erros = a5.square()
-                let buf = erros.dataSync()
-                costs = buf.values
-                return erros.mean()
+        const criticLoss = this.criticOptimiser.minimize(() => {
+            const tfQPredictions0 = this.critic.model.predict([tfObs0, tfActions]);
+            const tfQPredictions1 = this.criticTargetWithActorTarget(tfObs1);
+            const a2 = tf.mul(tf.mul(tf.sub(tf.scalar(1), tfTerminals), this.tfGamma), tfQPredictions1);
+            const tfQTargets = tfRewards.add(a2);
+            const a5 = tf.sub(tfQTargets, tfQPredictions0);
+            const erros = a5.square();
+            let buf = erros.dataSync();
+            costs = buf.values;
+            return erros.mean();
         }, true, this.criticWeights);
 
         // For experience Replay
@@ -197,14 +189,13 @@ class DDPG {
 
     async trainActor(tfObs0){
 
-        const actorLoss = await this.actorOptimiser.minimize(async () => {
-            const tfQPredictions0 = await this.criticWithActor(tfObs0); 
+        const actorLoss = this.actorOptimiser.minimize(() => {
+            const tfQPredictions0 = this.criticWithActor(tfObs0); 
             return tf.mean(tfQPredictions0).mul(tf.scalar(-1.))
         }, true, this.actorWeights);
 
-        await targetUpdate(this.actorTarget, this.actor, this.config);
-        let buf = await actorLoss.buffer()
-        const loss = buf.values[0];
+        targetUpdate(this.actorTarget, this.actor, this.config);
+        const loss = actorLoss.dataSync()[0];
         actorLoss.dispose(); 
 
         return loss;
@@ -214,14 +205,14 @@ class DDPG {
         // Get batch
         const batch = await this.memory.popBatch(this.config.batchSize);
         // Convert to tensors
-        const tfActions = await tf.tensor2d(batch.actions);
-        const tfObs0 = await tf.tensor2d(batch.obs0);
-        const tfObs1 = await tf.tensor2d(batch.obs1);
-        const _tfRewards = await tf.tensor1d(batch.rewards);
-        const _tfTerminals =  await tf.tensor1d(batch.terminals);
+        const tfActions = tf.tensor2d(batch.actions);
+        const tfObs0 = tf.tensor2d(batch.obs0);
+        const tfObs1 = tf.tensor2d(batch.obs1);
+        const _tfRewards = tf.tensor1d(batch.rewards);
+        const _tfTerminals =  tf.tensor1d(batch.terminals);
 
-        const tfRewards = await _tfRewards.expandDims(1);
-        const tfTerminals = await _tfTerminals.expandDims(1);
+        const tfRewards = _tfRewards.expandDims(1);
+        const tfTerminals = _tfTerminals.expandDims(1);
 
         _tfRewards.dispose();
         _tfTerminals.dispose();

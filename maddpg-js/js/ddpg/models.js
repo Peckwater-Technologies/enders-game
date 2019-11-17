@@ -102,7 +102,7 @@ class Actor{
      * 
      * @param obs tf.input
      */
-    async buildModel(obs){
+    buildModel(obs){
         this.obs = obs;
 
         // First layer
@@ -131,18 +131,18 @@ class Actor{
             biasInitializer: "zeros"
         });
         // Actor prediction
-        this.predict = async (tfState) => {
+        this.predict = (tfState) => {
             if (tfState){
                 obs = tfState;
             }
 
-            let l1 = await this.firstLayer.apply(obs);
-            let l2 = await this.secondLayer.apply(l1);
+            let l1 = this.firstLayer.apply(obs);
+            let l2 = this.secondLayer.apply(l1);
 
-            return await this.outputLayer.apply(l2);
+            return this.outputLayer.apply(l2);
         }
-        const output = await this.predict();
-        this.model = await tf.model({inputs: obs, outputs: output});
+        const output = this.predict();
+        this.model = tf.model({inputs: obs, outputs: output});
     }
 }
 
@@ -171,7 +171,7 @@ class Critic {
      * @param obs tf.input
      * @param action tf.input
      */
-    async buildModel(obs, action){
+    buildModel(obs, action){
         this.obs = obs;
         this.action = action;
 
@@ -214,23 +214,23 @@ class Critic {
         });
         
         // Critic prediction
-        this.predict = async (tfState, tfActions) => {
+        this.predict = (tfState, tfActions) => {
             if (tfState && tfActions){
                 obs = tfState;
                 action = tfActions;
             }
                 
-            let l1A = await this.firstLayerA.apply(action);
-            let l1S = await this.firstLayerS.apply(obs)
+            let l1A = this.firstLayerA.apply(action);
+            let l1S = this.firstLayerS.apply(obs)
             
             // Merged layers
-            let concat = await this.add.apply([l1A, l1S])
-            let l2 = await this.secondLayer.apply(concat);   
-            return await this.outputLayer.apply(l2);
+            let concat = this.add.apply([l1A, l1S])
+            let l2 = this.secondLayer.apply(concat);   
+            return this.outputLayer.apply(l2);
         }
 
-        const output = await this.predict();
-        this.model = await tf.model({inputs: [obs, action], outputs: output});
+        const output = this.predict();
+        this.model = tf.model({inputs: [obs, action], outputs: output});
     }
 }
 
