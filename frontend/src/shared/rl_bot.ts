@@ -1,4 +1,5 @@
 
+/*
 import maddpg from "../maddpg-js";
 
 import {Agent, Game, GameState, } from "./interfaces";
@@ -65,3 +66,4 @@ export async function MappedRLNetBot<State, Action, Observation>(game: Game<Stat
   )
 } 
 
+*/
