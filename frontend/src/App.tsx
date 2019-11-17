@@ -112,6 +112,9 @@ class App extends React.Component<{}, {
 						<h2>
 							Our story
 						</h2>
+						<a href='https://devpost.com/software/ender-s-compute'>
+							https://devpost.com/software/ender-s-compute
+						</a>
 					</div>
 				</div>
 			</>			
