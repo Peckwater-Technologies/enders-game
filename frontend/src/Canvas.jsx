@@ -37,6 +37,9 @@ export default class Canvas extends React.Component {
 
 	updateState(ShooterState) {
 		let state = Object.assign(this.state, ShooterState);
+		state = Object.assign(state, {
+			scale: (this.state.scale + this.getScale(state)) / 2
+		});
 		this.setState(state);
 	}
 
@@ -67,22 +70,37 @@ export default class Canvas extends React.Component {
 		return this._trees = trees;
 	}
 
+	getScale(state) {
+		let xs = state.players.map(b => b.x);
+		let rangeX = Math.max(...xs) - Math.min(...xs) + 20;
+		let ys = state.players.map(b => b.y);
+		let rangeY = Math.max(...ys) - Math.min(...ys) + 20;
+		let scaleX = state.surface.width / rangeX;
+		let scaleY = state.surface.height / rangeY;
+		//accounts for limits of zoom out
+		let scale = Math.max(Math.min(scaleX, scaleY), state.surface.width / GameOptions.gameWidth, state.surface.height / GameOptions.gameHeight);
+		if (isNaN(scale)) scale = 1;
+		return scale;
+	}
+
 	render() {
-		
-		return <Stage {...this.state.surface}>
+		return <Stage {...this.state.surface} scale={{
+			x: this.state.scale,
+			y: this.state.scale
+		}}>
 			<Layer id='background'>				
 				<Rect
 					x={background.x}
 					y={background.y}
-					width={this.state.surface.width}
-					height={this.state.surface.height}
+					width={Math.min(this.state.surface.width / this.state.scale, GameOptions.gameWidth)}
+					height={Math.min(this.state.surface.height / this.state.scale, GameOptions.gameHeight)}
 					fill={background.colour}
 				/>
 			</Layer>
 			<Layer id='grid'>				
 				<Grid
-					width={this.state.surface.width}
-					height={this.state.surface.height}
+					width={Math.min(this.state.surface.width / this.state.scale, GameOptions.gameWidth)}
+					height={Math.min(this.state.surface.height / this.state.scale, GameOptions.gameHeight)}
 					freq={config.grid.freqWidth}
 				/>
 			</Layer>
@@ -91,7 +109,7 @@ export default class Canvas extends React.Component {
 			</Layer>
 			<Layer id='players' {...this.state.layer}>			
 				{this.state.players.map((b, i) => <Shooter
-					key = {['shooter', i].join('.')}
+					key={['shooter', i].join('.')}
 					data={b}
 				/>)}
 			</Layer>

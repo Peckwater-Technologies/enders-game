@@ -28,5 +28,6 @@
 			"angle": 45
 		}
 	],
-	"trees": 200
+	"trees": 200,
+	"scale": 1
 }
