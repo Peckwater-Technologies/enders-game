@@ -37,11 +37,8 @@ export default class Canvas extends React.Component {
 
 	updateState(ShooterState) {
 		let state = Object.assign(this.state, ShooterState);
-		let [actual, centreX, centreY, rangeX, rangeY] = this.getScale(state);
-		state = Object.assign(state, {
-			scale: Math.min(Math.min((this.state.scale + actual) / 2), GameOptions.gameWidth / config.minWidth),
-			minX, minY
-		});
+		let [scale, minX, minY] = this.getScale(state);
+		state = Object.assign(state, { scale, minX, minY });
 		this.setState(state);
 	}
 
@@ -73,45 +70,37 @@ export default class Canvas extends React.Component {
 	}
 
 	getScale(state) {
-		let xs = state.players.map(b => b.x);
-		let minX = Math.min(...xs);
-		if (isNaN(minX)) minX = 0;
-		let rangeX = Math.max(...xs) - minX;
-		let ys = state.players.map(b => b.y);
-		let minY = Math.min(...ys);
-		if (isNaN(minY)) minY = 0;
-		let rangeY = Math.max(...ys) - minY;
-		let scaleX = GameOptions.gameWidth / (rangeX + 20);
-		let scaleY = GameOptions.gameHeight / (rangeY + 20);
-		//accounts for limits of zoom out
-		let centreX = rangeX * 0.5 + minX;
-		let centreY = rangeY * 0.5 + minY;
-		let scale = Math.max(Math.min(scaleX, scaleY), state.surface.width / GameOptions.gameWidth, state.surface.height / GameOptions.gameHeight);
+		let x0 = state.players[0].x; let y0 = state.players[0].y;
+		let x1 = state.players[1].x; let y1 = state.players[1].y;
+
+		const PADDING = 50 + GameOptions.playerRadius;
+		let minX = Math.min(x0, x1) - PADDING;
+		let minY = Math.min(y0, y1) - PADDING;
+		let rangeX = Math.abs(x1 - x0) + 2 * PADDING
+		let rangeY = Math.abs(y1 - y0) + 2 * PADDING
+
+		let scaleX = window.innerWidth / rangeX;
+		let scaleY = window.innerHeight / rangeY;
+		let scale = Math.min(Math.min(scaleX, scaleY), 2);
 		if (isNaN(scale)) scale = 1;
-		return [scale, centreX, centreY, rangeX, rangeY];
+
+		return [scale, minX - 10, minY - 10];
 	}
 
 	render() {
-		let theoreticalX = GameOptions.gameWidth / this.state.scale;
-		let calculatedXOffset = Math.min(this.state.minX, GameOptions.gameWidth - theoreticalX);
-		let theoreticalY = GameOptions.gameHeight / this.state.scale;
-		let calculatedYOffset = Math.min(this.state.minY, GameOptions.gameHeight - theoreticalY);
-		
-		console.log(theoreticalX, theoreticalY, this.state.scale);
-		return <Stage {...this.state.surface} /*
-			x={-calculatedXOffset}
-			y={-calculatedYOffset}
+		console.log(this.state);
+		return <Stage {...this.state.surface}
+			x={-this.state.minX * this.state.scale}
+			y={-this.state.minY * this.state.scale}
 			scale={{
 				x: this.state.scale,
 				y: this.state.scale
-			}}*/
+			}}
 		>
 			<Layer id='background'>				
 				<Rect
 					width={GameOptions.gameWidth}
 					height={GameOptions.gameHeight}
-					//width={theoreticalX}
-					//height={theoreticalY}
 					fill={background.colour}
 				/>
 			</Layer>
@@ -119,8 +108,6 @@ export default class Canvas extends React.Component {
 				<Grid
 					width={GameOptions.gameWidth}
 					height={GameOptions.gameHeight}
-					//width={theoreticalX}
-					//height={theoreticalY}
 					freq={config.grid.freqWidth}
 				/>
 			</Layer>
@@ -138,21 +125,6 @@ export default class Canvas extends React.Component {
 					key = {['bullet', i].join('.')}
 					data={b}
 				/>)}
-			</Layer>
-			<Layer>
-				<Rect
-					width={theoreticalX}
-					height={theoreticalY}
-					x={calculatedXOffset}
-					y={calculatedYOffset}
-					strokeWidth={10}
-					stroke='black'
-				/>
-				<Text x={0} y={0} fontSize={100} text={`
-				Size: (${theoreticalX}, ${theoreticalY})
-				Offset: (${calculatedXOffset}, ${calculatedYOffset})
-				Minimum: (${this.state.minX}, ${this.state.minY})
-				`}/>
 			</Layer>
 		</Stage>
 	}
