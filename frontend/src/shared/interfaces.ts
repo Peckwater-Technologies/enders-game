@@ -15,7 +15,8 @@ export interface Agent<Observation extends GameObservation, Action extends GameA
 }
 
 export interface Renderer<State extends GameState> {
-  render(state: State): void;
+	redeploy(state: State): void;
+	render(state: State): void;
 }
 
 export interface Game<State extends GameState, Action extends GameAction, Observation extends GameObservation> {

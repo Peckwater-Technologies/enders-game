@@ -31,8 +31,10 @@ export default class Canvas extends React.Component {
 		}), 1000 / config.frameRate);*/
 	}
 
-	setEnv(props) {
-
+	redeploy(props) {
+		if (props) {
+			if (this._trees) delete this._trees;
+		}
 	}
 
 	updateState(ShooterState) {
@@ -58,12 +60,13 @@ export default class Canvas extends React.Component {
 		this.setState(state);
 	}
 
-	getTrees() {
-		if (this._trees) return this._trees;
+	getTrees(obstacles = []) {
+		if (this._trees && this._trees.length) return this._trees;
 		let trees = [];
-		for (let i = 0; i < this.state.trees; i++) {
+		for (let i = 0; i < obstacles.length; i++) {
 			trees.push(<Tree
 				key={['tree', i].join('.')}
+				{...obstacles[i]}
 			/>);
 		}
 		return this._trees = trees;
@@ -88,7 +91,6 @@ export default class Canvas extends React.Component {
 	}
 
 	render() {
-		console.log(this.state);
 		return <Stage {...this.state.surface}
 			x={-this.state.minX * this.state.scale}
 			y={-this.state.minY * this.state.scale}
@@ -108,10 +110,7 @@ export default class Canvas extends React.Component {
 					freq={config.grid.freqWidth}
 				/>
 			</Layer>
-			<Layer id='trees' {...this.state.layer}>
-				{this.getTrees()}
-			</Layer>
-			<Layer id='bullets' {...this.state.layer}>
+			<Layer id='bullets'>
 				{this.state.bullets.map((b, i) => <Bullet
 					key = {['bullet', i].join('.')}
 					data={b}
@@ -120,8 +119,12 @@ export default class Canvas extends React.Component {
 			<Layer id='players' {...this.state.layer}>			
 				{this.state.players.map((b, i) => <Shooter
 					key={['shooter', i].join('.')}
+					i={i}
 					data={b}
 				/>)}
+			</Layer>
+			<Layer id='trees'>
+				{this.getTrees(this.state.obstacles)}
 			</Layer>
 		</Stage>
 	}

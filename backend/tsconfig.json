@@ -10,7 +10,7 @@
     "baseUrl": ".",
     "allowJs": true,
     "skipLibCheck": true,
-    "paths": { "*": ["node_modules/*"] },
+    "paths": { "*": ["node_modules/*"] }
   },
   "include": [ "src/**/*" ]
 }

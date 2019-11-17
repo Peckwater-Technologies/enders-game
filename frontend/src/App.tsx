@@ -1,6 +1,7 @@
 import React from 'react';
 import Canvas from './Canvas';
-import './App.css';
+import Header from './Header';
+import './App.scss';
 import { DumbAgent, StampedeBot, realPlayer } from './shared/dumb_bot';
 import { MappedRLNetBot } from './shared/rl_bot';
 import { gameLoop } from './shared/gameLoop';
@@ -23,23 +24,33 @@ class App extends React.Component {
 	}
 	async render() {
 		let ref = React.createRef<Canvas>();
-
-		// let agent1 = this.playerAgent;
 		let agent1 = this.player[2];
-		let agent2 = await MappedRLNetBot(ShooterGame);
-
+		let agent2 = new StampedeBot();
 		gameLoop(ShooterGame, [agent1, agent2],
-			{ render: state => ref.current && ref.current.updateState(state) },
+			{
+				redeploy: state => ref.current && ref.current.redeploy(state),
+				render: state => ref.current && ref.current.updateState(state)
+			},
 			GameOptions.fps
 		)
-
-		return <div
-				className="App"
-				id='container'
-				ref='container'
-			>
-			{ <Canvas ref={ref} /> }
-		</div>;
+		return (
+			<>
+				<div className='Background'>
+					<div className='Wallpaper'/>
+				</div>
+				<Header/>
+				<br />
+				<div className='Column'>
+					<div
+						className="App"
+						id='container'
+						ref='container'
+					>
+						{<Canvas ref={ref} />}
+					</div>
+				</div>
+			</>			
+		);
 	}
 }
 
