@@ -11,6 +11,8 @@ export const GameOptions = {
 
 	sensorRadius: 100,
 
+	noSensors: 20,
+
 	bulletSpeed: 500, // pixels / second
 	bulletRadius: 2,
 	bulletDamage: 0.5, // amount of player health removed (starting health is 1)

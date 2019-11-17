@@ -66,7 +66,24 @@ class ShooterGame implements Game<ShooterState, ShooterAction, ShooterObservatio
   }
 
   generateObservation(state: ShooterState, agentIdx: number): ShooterObservation {
-    // TODO
+    let agent = state.players[agentIdx];
+    let x = agent.x;
+    let y = agent.y;
+    let angle = agent.angle;
+    let cooldown = agent.cooldown;
+
+    let sensorSpread = 360 / GameOptions.noSensors;
+    for(let i = 0; i < GameOptions.noSensors; i++) {
+      let sensorAngle = (angle + i * sensorSpread) / 180 * Math.PI;
+      let halfsidevector = [Math.cos(sensorAngle + Math.PI / 2) * GameOptions.playerRadius, Math.sin(sensorAngle + Math.PI / 2) * GameOptions.playerRadius];
+      let longsidevector = [Math.cos(sensorAngle) * (GameOptions.playerRadius+GameOptions.sensorRadius), Math.sin(sensorAngle) *(GameOptions.playerRadius+GameOptions.sensorRadius)]
+      let a = [x + halfsidevector[0], y + halfsidevector[1]];
+      let b = [x - halfsidevector[0], y - halfsidevector[1]];
+      let c = [b[0] + longsidevector[0], b[1] + longsidevector[1]];
+      let d = [a[0] + longsidevector[0], a[1] + longsidevector[1]];
+      let detectionRectangle = [a, b, c, d];
+
+    }
     return {
       x: 0,
       y: 0,
@@ -86,7 +103,7 @@ function detectCollision(player: Player, bullet: Bullet, player_id: number) {
 }
 
 function moveObject<T extends { x: number, y: number, angle: number }>(object: T, speed: number, radius: number): T {
-  let radians = object.angle / 360 * 2 * Math.PI;
+  let radians = object.angle / 180 * Math.PI;
   let x = object.x + Math.cos(radians) * speed;
   let y = object.y + Math.sin(radians) * speed;
   if (x > GameOptions.gameWidth - radius) {
@@ -106,4 +123,8 @@ function moveObject<T extends { x: number, y: number, angle: number }>(object: T
     x: x,
     y: y,
   };
+}
+
+function isSensorDetecting<T extends {x: number, y:number}>(source: T, object: T, angle: number, radiusOfObject: number) {
+  let detectionRectangle = [[], []]
 }
