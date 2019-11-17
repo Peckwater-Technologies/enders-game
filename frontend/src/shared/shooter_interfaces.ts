@@ -24,7 +24,7 @@ export const GameOptions = {
 export interface ShooterState extends GameState {
 	players: Array < Player > ;
 	bullets: Array < Bullet > ;
-	obstacles: Array < Obstacle > ;
+	obstacles: Array <Obstacle >;
 }
 
 export interface Player {
