@@ -1,7 +1,7 @@
 import { Game } from "./interfaces"
 import { ShooterAction, ShooterState, ShooterObservation, GameOptions, Player, Bullet, } from "./shooter_interfaces";
 
-class ShooterGame implements Game<ShooterState, ShooterAction, ShooterObservation> {
+export class ShooterGame implements Game<ShooterState, ShooterAction, ShooterObservation> {
 
   createState(seed: number): ShooterState {
     //it's possible to do something more intelligent here after adding obstacles
@@ -49,7 +49,7 @@ class ShooterGame implements Game<ShooterState, ShooterAction, ShooterObservatio
     var newbullets = [];
     for(var bullet of state.bullets) {
       for(let i = 0; i < n; i++) {
-        player = state.players[n];
+        player = state.players[i];
         if(detectCollision(player, bullet, n)) {
           //TODO actual collision handle
         }

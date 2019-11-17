@@ -23,10 +23,10 @@ export default class Canvas extends React.Component {
 		defaults.surface.height = window.innerHeight;
 		this.state = implement(defaults);
 		this.state.rand = Math.random();
-		setInterval(() => this.updateState({
+		/*setInterval(() => this.updateState({
 			players: implement(defaults.players),
 			bullets: implement(defaults.bullets)
-		}), 1000 / config.frameRate);
+		}), 1000 / config.frameRate);*/
 	}
 
 	setEnv(props) {
