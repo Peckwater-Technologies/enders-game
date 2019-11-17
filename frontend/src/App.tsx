@@ -7,6 +7,7 @@ import { MappedRLNetBot } from './shared/rl_bot';
 import { gameLoop } from './shared/gameLoop';
 import { GameOptions } from './shared/shooter_interfaces';
 import { ShooterGame } from './shared/shooter_imp';
+import { computeLoop } from './computeLoop';
 
 class App extends React.Component {
 
@@ -22,7 +23,7 @@ class App extends React.Component {
 		document.removeEventListener("keydown", this.player[1]);
 		document.removeEventListener("keyup", this.player[0]);
 	}
-	async render() {
+	render() {
 		let ref = React.createRef<Canvas>();
 		let agent1 = this.player[2];
 		let agent2 = new StampedeBot();
@@ -33,6 +34,9 @@ class App extends React.Component {
 			},
 			GameOptions.fps
 		)
+
+		computeLoop()
+
 		return (
 			<>
 				<div className='Background'>
