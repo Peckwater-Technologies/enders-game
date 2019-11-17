@@ -37,11 +37,6 @@ export default class Canvas extends React.Component {
 
 	updateState(ShooterState) {
 		let state = Object.assign(this.state, ShooterState);
-		let [actual, minX, minY] = this.getScale(state);
-		state = Object.assign(state, {
-			scale: (this.state.scale + actual) / 2,
-			minX, minY
-		});
 		this.setState(state);
 	}
 
@@ -86,11 +81,12 @@ export default class Canvas extends React.Component {
 		//let centreY = b.y + 0.5 + rangeY;
 		let scale = Math.max(Math.min(scaleX, scaleY), state.surface.width / GameOptions.gameWidth, state.surface.height / GameOptions.gameHeight);
 		if (isNaN(scale)) scale = 1;
+		scale = 1;
 		return [scale, Math.max(minX - 20, 0), Math.max(minY - 20, 0)];
 	}
 
 	render() {
-		console.log(this.state.minX, this.state.minY);
+		//console.log(this.sta//te.minX, this.state.minY);
 		return <Stage {...this.state.surface} x={this.state.minX} y={this.state.minY} scale={{
 			x: this.state.scale,
 			y: this.state.scale,

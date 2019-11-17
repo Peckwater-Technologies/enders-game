@@ -14,7 +14,7 @@ export class DumbAgent implements Agent<ShooterObservation, ShooterAction> {
 
 export class StampedeBot implements Agent<ShooterObservation, ShooterAction> {
   act(state: ShooterObservation): ShooterAction {
-    let isEnemyInFront = state.enemySensors[0] == 1;
+    let isEnemyInFront = state.enemySensors[0] === 1;
     return {
       fireBullet: isEnemyInFront,
       turnLeft: !isEnemyInFront,
@@ -24,34 +24,107 @@ export class StampedeBot implements Agent<ShooterObservation, ShooterAction> {
   }
 }
 
-export class RealPlayer implements Agent<ShooterObservation, ShooterAction> {
-  rotate_left = false;
-  rotate_right = false;
-  move = false;
-  shoot = false;
-  handleKeyPress(event: React.KeyboardEvent<HTMLDivElement>): void {
-		console.log('hello world');
-		console.log(event);
-		if (event.keyCode === 38) {
-			this.move = !this.move;
-		}
-		else
-		if (event.keyCode === 40) {
-			this.shoot = !this.shoot;
-		}
-		else
-		if (event.keyCode === 37) {
-		   this.rotate_left = !this.rotate_left;
-		}
-		else
-		if (event.keyCode === 39) {
-		   this.rotate_right = !this.rotate_right;
-		}
+const KEY_LEFT = 37;
+const KEY_RIGHT = 39;
+const KEY_MOVE = 38;
+const KEY_SHOOT = 40;
+
+export function realPlayer(): [(event: KeyboardEvent) => void, (event: KeyboardEvent) => void, Agent<ShooterObservation, ShooterAction>] {
+
+  const action = {
+    turnLeft: false,
+    turnRight: false,
+    moveForward: false,
+    fireBullet: false
+  };
+
+
+  function keyDown(event: KeyboardEvent): void {
+    console.log("Key down");
+    switch (event.keyCode) {
+      case KEY_LEFT:
+        action.turnLeft = true;
+        break;
+      case KEY_RIGHT:
+        action.turnRight = true;
+        break;
+      case KEY_MOVE:
+        action.moveForward = true;
+        break;
+      case KEY_SHOOT:
+        action.fireBullet = true;
+        break;
+    }
+  }
+
+  function keyUp(event: KeyboardEvent): void {
+    switch (event.keyCode) {
+      case KEY_LEFT:
+        action.turnLeft = false;
+        break;
+      case KEY_RIGHT:
+        action.turnRight = false;
+        break;
+      case KEY_MOVE:
+        action.moveForward = false;
+        break;
+      case KEY_SHOOT:
+        action.fireBullet = false;
+        break;
+    }
 	}
 
-  constructor() {
+  return [keyUp, keyDown, { act: _ => action }];
+}
 
+export class RealPlayer implements Agent<ShooterObservation, ShooterAction> {
+  private rotate_left: boolean;
+  private rotate_right: boolean;
+  private move: boolean;
+  private shoot: boolean;
+
+  constructor() {
+    this.rotate_left = false;
+    this.rotate_right = false;
+    this.move = true;
+    this.shoot = false;
   }
+
+  keyDown(event: KeyboardEvent): void {
+    console.log("Key down");
+    switch (event.keyCode) {
+      case KEY_LEFT:
+        this.rotate_left = true;
+        break;
+      case KEY_RIGHT:
+        this.rotate_right = true;
+        break;
+      case KEY_MOVE:
+        this.move = true;
+        break;
+      case KEY_SHOOT:
+        this.shoot = true;
+        break;
+    }
+  }
+
+  keyUp(event: KeyboardEvent): void {
+    switch (event.keyCode) {
+      case KEY_LEFT:
+        this.rotate_left = false;
+        break;
+      case KEY_RIGHT:
+        this.rotate_right = false;
+        break;
+      case KEY_MOVE:
+        this.move = false;
+        break;
+      case KEY_SHOOT:
+        this.shoot = false;
+        break;
+    }
+	}
+
   act(state: ShooterObservation): ShooterAction {
     return {
       fireBullet: this.shoot,
