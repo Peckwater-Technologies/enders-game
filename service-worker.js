@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/enders-game/precache-manifest.90405fa8f08b5cafbdcfd68aeccd977c.js"
+  "/enders-game/precache-manifest.af8e2bf213f2cc6584b2559b1531459a.js"
 );
 
 self.addEventListener('message', (event) => {
