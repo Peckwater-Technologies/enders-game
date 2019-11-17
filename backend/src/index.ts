@@ -1,5 +1,6 @@
 import * as tf from "@tensorflow/tfjs";
 import express from "express";
+import { ShooterGame } from "../../frontend/src/shared/shooter_imp";
 import { jsonToModel, modelToJson } from "./tfSerialize";
 
 const hiddenLayers = [ 40 ];
@@ -24,7 +25,7 @@ const port = 4321;
 
 app.get("/", (req, res) => res.send("Hello World!"));
 
-let currentModel: tf.LayersModel = makeModel(5, 5);
+let currentModel: tf.LayersModel = makeModel(ShooterGame.observationSize, ShooterGame.actionSize);
 let currentPerformance = 0;
 
 app.get("/models/shooter", async (req, res) => {

@@ -8,7 +8,7 @@ import { ShooterGame } from './shared/shooter_imp';
 
 class App extends React.Component {
 
-	handleKeyPress(event: KeyboardEvent): void {
+	handleKeyPress(event: React.KeyboardEvent<HTMLDivElement>): void {
 		console.log('hello world');
 		console.log(event);
 		if (event.keyCode === 38) {
@@ -29,11 +29,11 @@ class App extends React.Component {
 	}
 
 	componentDidMount(){
-		document.addEventListener("keydown", this.handleKeyPress, false);
+		// document.addEventListener("keydown", this.handleKeyPress, false);
 	}
 	
 	componentWillUnmount(){
-		document.removeEventListener("keydown", this.handleKeyPress, false);
+		// document.removeEventListener("keydown", this.handleKeyPress, false);
 	}
 
 	render() {
