@@ -2,6 +2,7 @@ import React from 'react';
 import Canvas from './Canvas';
 import './App.css';
 import { DumbAgent, StampedeBot, realPlayer } from './shared/dumb_bot';
+import { MappedRLNetBot } from './shared/rl_bot';
 import { gameLoop } from './shared/gameLoop';
 import { GameOptions } from './shared/shooter_interfaces';
 import { ShooterGame } from './shared/shooter_imp';
@@ -20,13 +21,12 @@ class App extends React.Component {
 		document.removeEventListener("keydown", this.player[1]);
 		document.removeEventListener("keyup", this.player[0]);
 	}
-
-	render() {
+	async render() {
 		let ref = React.createRef<Canvas>();
 
 		// let agent1 = this.playerAgent;
 		let agent1 = this.player[2];
-		let agent2 = new StampedeBot();
+		let agent2 = await MappedRLNetBot(ShooterGame);
 
 		gameLoop(ShooterGame, [agent1, agent2],
 			{ render: state => ref.current && ref.current.updateState(state) },

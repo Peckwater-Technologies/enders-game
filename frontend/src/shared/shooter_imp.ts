@@ -235,6 +235,10 @@ function moveObject<T extends { x: number, y: number, angle: number }>(object: T
         while(radius + obstacle.size > Math.hypot(x - obstacle.x, y - obstacle.y) + 0.1){
           x += stepx;
           y += stepy;
+          if(radius < 1) {
+            x = 1000000;
+            break;
+          }
         }
         break;
       case ObstacleShape.Square:
@@ -242,6 +246,10 @@ function moveObject<T extends { x: number, y: number, angle: number }>(object: T
         while(radius + obstacle.size > Math.hypot(x - obstacle.x, y - obstacle.y) + 0.1){
           x += stepx;
           y += stepy;
+          if(radius < 1) {
+            x = 1000000;
+            break;
+          }
         }
         break;
     }
