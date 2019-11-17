@@ -4,6 +4,7 @@ import { Stage, Layer, Rect} from 'react-konva';
 import Shooter from './Objects/Shooter';
 import Bullet from './Objects/Bullet';
 import Tree from './Objects/Tree';
+import Grid from './Objects/Grid';
 
 import {randBetween} from './utils/random';
 
@@ -23,6 +24,10 @@ export default class Canvas extends React.Component {
 		this.state = implement(defaults);
 		this.state.rand = Math.random();
 		//setInterval(this.newPosition, 1000 / config.frameRate);
+	}
+
+	setEnv(props) {
+
 	}
 
 	newPosition() {
@@ -50,7 +55,7 @@ export default class Canvas extends React.Component {
 	}
 
 	render() {
-		return <Stage {...this.state.surface} ref='canvas' >
+		return <Stage {...this.state.surface}>
 			<Layer id='background'>				
 				<Rect
 					x={background.x}
@@ -58,6 +63,13 @@ export default class Canvas extends React.Component {
 					width={this.state.surface.width}
 					height={this.state.surface.height}
 					fill={background.colour}
+				/>
+			</Layer>
+			<Layer id='grid'>				
+				<Grid
+					width={this.state.surface.width}
+					height={this.state.surface.height}
+					freq={config.grid.freqWidth}
 				/>
 			</Layer>
 			<Layer id='trees' {...this.state.layer}>

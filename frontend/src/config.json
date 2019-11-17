@@ -1,5 +1,9 @@
 {
 	"frameRate": 100,
+	"grid": {
+		"freqWidth": 20,
+		"transparency": 0.3
+	},
 	"background": {
 		"colour": "#608038",
 		"x": 0,
