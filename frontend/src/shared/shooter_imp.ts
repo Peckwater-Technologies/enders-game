@@ -24,7 +24,8 @@ class ShooterGame implements Game<ShooterState, ShooterAction, ShooterObservatio
     };
   }
 
-  updateState(state: ShooterState, action: ShooterAction[], dt: number): ShooterState {
+  updateState(state: ShooterState, action: ShooterAction[]): ShooterState {
+    var dt = 1 / GameOptions.fps;
     var n = state.players.length;
     for(let i = 0; i < n; i++) {
       var curr = action[i];
