@@ -24,6 +24,7 @@ export const GameOptions = {
 export interface ShooterState extends GameState {
 	players: Array < Player > ;
 	bullets: Array < Bullet > ;
+	obstacles: Array < Obstacle > ;
 }
 
 export interface Player {
@@ -40,6 +41,18 @@ export interface Bullet {
 	angle: number;
 }
 
+export interface Obstacle {
+	x: number;
+	y: number;
+	shape: ObstacleShape;
+	size: number;
+}
+
+export enum ObstacleShape {
+	Circle,
+	Square,
+}
+
 export interface ShooterObservation extends GameObservation {
 	x: number;
 	y: number;
@@ -49,6 +62,7 @@ export interface ShooterObservation extends GameObservation {
 	// Sensors are 0 or 1 (indicating presence)
 	enemySensors: Array < number > ;
 	bulletSensors: Array < number > ;
+	obstacleSensors: Array < number > ;
 }
 
 

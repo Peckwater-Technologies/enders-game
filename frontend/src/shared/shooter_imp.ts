@@ -1,5 +1,5 @@
 import { Game } from "./interfaces"
-import { ShooterAction, ShooterState, ShooterObservation, GameOptions, Player, Bullet, } from "./shooter_interfaces";
+import { ShooterAction, ShooterState, ShooterObservation, GameOptions, Player, Bullet, Obstacle, ObstacleShape, } from "./shooter_interfaces";
 
 const delta = 1 / GameOptions.fps;
 
@@ -20,9 +20,24 @@ export class ShooterGame implements Game<ShooterState, ShooterAction, ShooterObs
       cooldown: 0,
     };
 
+    let tree = {
+      x: GameOptions.gameWidth / 3,
+      y: GameOptions.gameHeight / 3,
+      shape: ObstacleShape.Circle,
+      size: GameOptions.playerRadius * 1.5,
+    }
+
+    let rock = {
+      x: 2 * GameOptions.gameWidth / 3,
+      y: 2 * GameOptions.gameHeight / 3,
+      shape: ObstacleShape.Square,
+      size: GameOptions.playerRadius,
+    }
+
     return {
       players: [player1, player2],
       bullets: [],
+      obstacles: [tree, rock],
     };
   }
 
@@ -35,7 +50,7 @@ export class ShooterGame implements Game<ShooterState, ShooterAction, ShooterObs
     for (let i = 0; i < n; i++) {
       const player = state.players[i];
       const action = actions[i];
-      
+
       let cooldown = player.cooldown;
       let angle = player.angle;
 
@@ -77,8 +92,8 @@ export class ShooterGame implements Game<ShooterState, ShooterAction, ShooterObs
         }
       }
     }
-    
-    return { players: newPlayers, bullets: newBullets };
+
+    return { ...state, players: newPlayers, bullets: newBullets };
   }
 
   generateObservation(state: ShooterState, agentIdx: number): ShooterObservation {
@@ -127,6 +142,7 @@ export class ShooterGame implements Game<ShooterState, ShooterAction, ShooterObs
       // Sensors are 0 or 1 (indicating presence)
       enemySensors: enemySensors,
       bulletSensors: bulletSensors,
+      obstacleSensors: [], //TODO
     };
   }
 }
