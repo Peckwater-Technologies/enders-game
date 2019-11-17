@@ -42,14 +42,14 @@ export const ShooterGame: Game<ShooterState, ShooterAction, ShooterObservation> 
       x: GameOptions.gameWidth / 3,
       y: GameOptions.gameHeight / 3,
       shape: ObstacleShape.Circle,
-      size: GameOptions.playerRadius * 1.5,
+      size: GameOptions.treeRadius,
     }
 
     let rock = {
       x: 2 * GameOptions.gameWidth / 3,
       y: 2 * GameOptions.gameHeight / 3,
       shape: ObstacleShape.Square,
-      size: GameOptions.playerRadius,
+      size: GameOptions.treeRadius,
     }
 
     return {
@@ -88,7 +88,7 @@ export const ShooterGame: Game<ShooterState, ShooterAction, ShooterObservation> 
         angle
       };
       if (action.moveForward) {
-        newPlayer = moveObject(newPlayer, GameOptions.playerMoveSpeed * delta, GameOptions.playerRadius);
+        newPlayer = moveObject(newPlayer, GameOptions.playerMoveSpeed * delta, GameOptions.playerRadius, state.obstacles);
       }
 
       newPlayers.push(newPlayer);
@@ -107,7 +107,7 @@ export const ShooterGame: Game<ShooterState, ShooterAction, ShooterObservation> 
         }
       }
       if (!collides) {
-        let newBullet = moveObject(bullet, GameOptions.bulletSpeed * delta, 0);
+        let newBullet = moveObject(bullet, GameOptions.bulletSpeed * delta, 0, state.obstacles);
         if (newBullet.x > 0 && newBullet.x < GameOptions.gameWidth && newBullet.y > 0 && newBullet.y < GameOptions.gameHeight){
           newBullets.push(newBullet);
         }
@@ -210,7 +210,7 @@ function detectCollision(player: Player, bullet: Bullet, player_id: number) {
     && bullet.sourceAgent != player_id;
 }
 
-function moveObject<T extends { x: number, y: number, angle: number }>(object: T, speed: number, radius: number): T {
+function moveObject<T extends { x: number, y: number, angle: number }>(object: T, speed: number, radius: number, obstacles: Array<Obstacle>): T {
   let radians = object.angle / 180 * Math.PI;
   let x = object.x + Math.cos(radians) * speed;
   let y = object.y + Math.sin(radians) * speed;
@@ -225,6 +225,24 @@ function moveObject<T extends { x: number, y: number, angle: number }>(object: T
   }
   else if (y < radius) {
     y = radius;
+  }
+
+  for(let obstacle of obstacles) {
+    switch(obstacle.shape) {
+      case ObstacleShape.Circle:
+        while(radius + obstacle.size > Math.hypot(x - obstacle.x, y - obstacle.y) + 0.01){
+          x = 0.5 * (obstacle.x + x);
+          y = 0.5 * (obstacle.y + y);
+        }
+        break;
+      case ObstacleShape.Square:
+        //TODO it does the same what circle
+        while(radius + obstacle.size > Math.hypot(x - obstacle.x, y - obstacle.y) + 0.01){
+          x = 0.5 * (obstacle.x + x);
+          y = 0.5 * (obstacle.y + y);
+        }
+        break;
+    }
   }
   return {
     ...object,
