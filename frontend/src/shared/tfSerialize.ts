@@ -1,16 +1,17 @@
 import * as tf from "@tensorflow/tfjs";
+import { SaveResult } from "@tensorflow/tfjs-core/dist/io/io";
 
 export async function modelToJson(model: tf.LayersModel): Promise<string> {
-  let res: string = null;
+  let res: string | null = null;
   await model.save(tf.io.withSaveHandler(async (artifacts: tf.io.ModelArtifacts) => {
     res = artifactsToJSON(artifacts);
-    return null;
+    return (null as unknown) as SaveResult;
   }));
   if (res === null) {
     // tslint:disable-next-line: no-console
     console.warn("WARNING: Model didn't export!");
   }
-  return res;
+  return (res as unknown) as string;
 }
 
 // Random token to signify string is array buffer
@@ -42,7 +43,7 @@ function jsonToArtifacts(json: string): tf.io.ModelArtifacts {
 }
 
 function ab2str(buf: ArrayBuffer): string {
-  return String.fromCharCode.apply(null, new Uint16Array(buf));
+  return String.fromCharCode.apply(null, (new Uint16Array(buf) as unknown) as number[] );
 }
 
 function str2ab(str: string): ArrayBuffer {

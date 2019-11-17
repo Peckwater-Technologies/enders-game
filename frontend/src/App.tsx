@@ -6,6 +6,7 @@ import { DumbAgent, StampedeBot, realPlayer } from './shared/dumb_bot';
 import { gameLoop } from './shared/gameLoop';
 import { GameOptions } from './shared/shooter_interfaces';
 import { ShooterGame } from './shared/shooter_imp';
+import { computeLoop } from './computeLoop';
 import expando_img from './assets/expando.png';
 
 class App extends React.Component<{}, {
@@ -73,7 +74,6 @@ class App extends React.Component<{}, {
 		document.removeEventListener("keydown", this.player[1]);
 		document.removeEventListener("keyup", this.player[0]);
 	}
-
 	render() {
 		let ref = React.createRef<Canvas>();
 		let agent1 = this.player[2];
@@ -89,6 +89,9 @@ class App extends React.Component<{}, {
 		if (this.state.growing) name += '.growing';
 		if (this.state.shrinking) name += '.shrinking';
 		if (this.state.full_screen) name += '.full-screen';
+
+		computeLoop()
+
 		return (
 			<>
 				<div className='Background'>

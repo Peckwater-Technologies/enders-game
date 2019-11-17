@@ -14,7 +14,7 @@ export function makeDQNModel(network) {
     stepsPerEpoch: 16
   };
 
-  const numActions = 20;//ShooterGame.actionSize;
+  const numActions = Math.pow(2, ShooterGame.actionSize)
   const inputSize = ShooterGame.observationSize;
   const temporalWindow = 0; 
 
@@ -52,20 +52,15 @@ export function makeDQNModel(network) {
   return {
     act: async (obs) => {
       const data = ShooterGame.getData(obs)
-      console.log(data);
-      console.log(data.length === inputSize)
-      const aold = await academy.step([{ teacherName: teacher, agentsInput: data }]);
-      academy.addRewardToAgent(agent, 10)
       const actions = await academy.step([{ teacherName: teacher, agentsInput: data }]);
-      console.log("ALL:")
-      for (var key in actions) {
-        if (actions.hasOwnProperty(key)) {
-            console.log(key + " -> " + actions[key]);
-        }
-      }
-      console.log("Actions: " + actions)
-      console.log(actions[agent.Name])
-      return actions.get(agent);
-    }
+      const res = actions.get(agent)
+      return {
+        fireBullet: (res & 1) == 1,
+        turnLeft: ((res >> 1) & 1) == 1,
+        turnRight: ((res >> 2) & 1) == 1,
+        moveForward: ((res >> 3) & 1) == 1
+      };
+    },
+    seeReward: r => academy.addRewardToAgent(agent, r)
   }
 }
