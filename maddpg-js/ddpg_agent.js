@@ -221,7 +221,6 @@ class DDPGAgent {
                 if (this.config.resetEpisode){
                     this.env.reset();
                 }
-                await this.env.shuffle();
                 tfPreviousStep.dispose();
                 console.log("e="+ this.epoch +", c="+c);
          
@@ -235,9 +234,6 @@ class DDPGAgent {
             }
             await tf.nextFrame();
         }
-            
-
-            await this.env.render(true);
     }
 
 }
