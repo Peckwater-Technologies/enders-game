@@ -52,15 +52,19 @@ export function realPlayer(): [(event: KeyboardEvent) => void, (event: KeyboardE
 	function keyDown(event: KeyboardEvent): void {
 		switch (event.keyCode) {
 			case KEY_LEFT:
+				event.preventDefault();
 				action.turnLeft = true;
 				break;
 			case KEY_RIGHT:
+				event.preventDefault();
 				action.turnRight = true;
 				break;
 			case KEY_MOVE:
+				event.preventDefault();
 				action.moveForward = true;
 				break;
 			case KEY_STOP:
+				event.preventDefault();
 				action.moveForward = false;
 				break;
 			case ALT_LEFT:
@@ -129,15 +133,19 @@ export class RealPlayer implements Agent < ShooterObservation, ShooterAction > {
 	keyDown(event: KeyboardEvent): void {
 		switch (event.keyCode) {
 			case KEY_LEFT:
+				event.preventDefault();
 				this.rotate_left = true;
 				break;
 			case KEY_RIGHT:
+				event.preventDefault();
 				this.rotate_right = true;
 				break;
 			case KEY_MOVE:
+				event.preventDefault();
 				this.move = true;
 				break;
 			case KEY_STOP:
+				event.preventDefault();
 				this.move = false;
 				break;
 			case ALT_LEFT:
@@ -153,6 +161,7 @@ export class RealPlayer implements Agent < ShooterObservation, ShooterAction > {
 				this.move = false;
 				break;
 			case KEY_SHOOT:
+				event.preventDefault();
 				this.shoot = true;
 				break;
 		}
