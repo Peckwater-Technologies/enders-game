@@ -1,4 +1,5 @@
 {
+	"minWidth": 2200,
 	"grid": {
 		"freqWidth": 20,
 		"transparency": 0.3

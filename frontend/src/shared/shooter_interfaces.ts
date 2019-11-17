@@ -1,8 +1,8 @@
 import {GameState, GameAction, GameObservation, Agent, Renderer, Game} from "./interfaces";
 
 export const GameOptions = {
-	gameWidth: 600,
-	gameHeight: 400,
+	gameWidth: 4096,
+	gameHeight: 2160,
 	fps: 30, // so a tick every 1000/30 = 33ms
 
 	playerRadius: 20,

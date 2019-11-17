@@ -1,5 +1,5 @@
 import React from 'react';
-import { Stage, Layer, Rect} from 'react-konva';
+import { Stage, Layer, Rect, Text } from 'react-konva';
 
 import Shooter from './Objects/Shooter';
 import Bullet from './Objects/Bullet';
@@ -37,6 +37,8 @@ export default class Canvas extends React.Component {
 
 	updateState(ShooterState) {
 		let state = Object.assign(this.state, ShooterState);
+		let [scale, minX, minY] = this.getScale(state);
+		state = Object.assign(state, { scale, minX, minY });
 		this.setState(state);
 	}
 
@@ -68,44 +70,41 @@ export default class Canvas extends React.Component {
 	}
 
 	getScale(state) {
-		let xs = state.players.map(b => b.x);
-		let minX = Math.min(...xs);
-		let rangeX = Math.max(...xs) - minX;
-		let ys = state.players.map(b => b.y);
-		let minY = Math.min(...ys);
-		let rangeY = Math.max(...ys) - minY;
-		let scaleX = state.surface.width / (rangeX + 20);
-		let scaleY = state.surface.height / (rangeY + 20);
-		//accounts for limits of zoom out
-		//let centreX = b.x + 0.5 + rangeX;
-		//let centreY = b.y + 0.5 + rangeY;
-		let scale = Math.max(Math.min(scaleX, scaleY), state.surface.width / GameOptions.gameWidth, state.surface.height / GameOptions.gameHeight);
+		let x0 = state.players[0].x; let y0 = state.players[0].y;
+		let x1 = state.players[1].x; let y1 = state.players[1].y;
+
+		const PADDING = 50 + GameOptions.playerRadius;
+		let minX = Math.min(x0, x1) - PADDING;
+		let minY = Math.min(y0, y1) - PADDING;
+		let rangeX = Math.abs(x1 - x0) + 2 * PADDING
+		let rangeY = Math.abs(y1 - y0) + 2 * PADDING
+
+		let scaleX = window.innerWidth / rangeX;
+		let scaleY = window.innerHeight / rangeY;
+		let scale = Math.min(Math.min(scaleX, scaleY), 2);
 		if (isNaN(scale)) scale = 1;
-		scale = 1;
-		return [scale, Math.max(minX - 20, 0), Math.max(minY - 20, 0)];
+
+		return [scale, minX - 10, minY - 10];
 	}
 
 	render() {
-		//console.log(this.sta//te.minX, this.state.minY);
-		return <Stage {...this.state.surface} x={this.state.minX} y={this.state.minY} scale={{
-			x: this.state.scale,
-			y: this.state.scale,
-			width: this.state.surface.width,
-			height: this.state.surface.height
-		}}>
+		console.log(this.state);
+		return <Stage {...this.state.surface}
+			x={-this.state.minX * this.state.scale}
+			y={-this.state.minY * this.state.scale}
+			scale={{ x: this.state.scale, y: this.state.scale }}
+		>
 			<Layer id='background'>				
 				<Rect
-					x={background.x}
-					y={background.y}
-					width={Math.min(this.state.surface.width / this.state.scale, GameOptions.gameWidth)}
-					height={Math.min(this.state.surface.height / this.state.scale, GameOptions.gameHeight)}
+					width={GameOptions.gameWidth}
+					height={GameOptions.gameHeight}
 					fill={background.colour}
 				/>
 			</Layer>
 			<Layer id='grid'>				
 				<Grid
-					width={Math.min(this.state.surface.width / this.state.scale, GameOptions.gameWidth)}
-					height={Math.min(this.state.surface.height / this.state.scale, GameOptions.gameHeight)}
+					width={GameOptions.gameWidth}
+					height={GameOptions.gameHeight}
 					freq={config.grid.freqWidth}
 				/>
 			</Layer>
