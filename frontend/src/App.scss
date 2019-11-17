@@ -79,36 +79,24 @@ div.App > div, div.konvajs-content {
 canvas {
 	height: 100% !important;
 	width: 100% !important;
-}
-&.growing {
-	h1.modal-content {
+	&.growing {
 		height: auto;
 		margin: 0;
 		opacity: 0;
 		transition-delay: 0.5s;
 	}
-}
-&.full-screen {
-	height: 100vh;
-	z-index: 100;
-	margin: 0;
-	border-radius: 0;
-	
-	.fa {
-		font-size: 10vw;
-	}
-	.modal-content {
+	&.full-screen {
+		height: 100vh;
+		z-index: 100;
+		margin: 0;
+		border-radius: 0;		
 		height: auto;
 		width: auto;
 		margin: inital;
-	}
-	h1.modal-content {
 		transition-delay: 0.5s;
 		opacity: 1;
 	}
-}
-&.shrinking {
-	h1.modal-content {
+	&.shrinking {
 		transition-delay: 0s;
 		transition: 0.5s;
 		opacity: 0;
