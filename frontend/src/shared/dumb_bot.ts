@@ -23,19 +23,3 @@ export class StampedeBot implements Agent<ShooterObservation, ShooterAction> {
     };
   }
 }
-
-export class RealPlayer implements Agent<ShooterObservation, ShooterAction> {
-
-  constructor() {
-
-  }
-
-  act(state: ShooterObservation): ShooterAction {
-    return {
-      fireBullet: true,
-      turnLeft: !isEnemyInFront,
-      turnRight: false,
-      moveForward: isEnemyInFront,
-    };
-  }
-}
