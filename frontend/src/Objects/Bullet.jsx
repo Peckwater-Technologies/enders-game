@@ -1,7 +1,7 @@
 import React from 'react';
 import {Circle, Group} from 'react-konva';
 
-import {GameOptions} from '../shared/shooter_interfaces.ts';
+import {GameOptions} from '../shared/shooter_interfaces';
 import config from '../config.json';
 const {bullet} = config;
 

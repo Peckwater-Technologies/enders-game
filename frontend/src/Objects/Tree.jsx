@@ -11,7 +11,10 @@ const {tree} = config;
 export default class Tree extends React.Component {
 
 	render() {
-		let b = this.props.data;
+		let b = {
+			x: randBetween(0, GameOptions.gameWidth),
+			y: randBetween(0, GameOptions.gameHeight)
+		};
 		let trees = [];
 		for (let i = 0; i < 4; i++) {
 			let base_x = i & 1;

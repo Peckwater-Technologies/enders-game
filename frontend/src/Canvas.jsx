@@ -11,6 +11,8 @@ import {randBetween} from './utils/random';
 import config from './config.json';
 import defaults from './defaults.json';
 
+import {GameOptions} from './shared/shooter_interfaces';
+
 const {background} = config;
 
 export default class Canvas extends React.Component {
@@ -54,7 +56,19 @@ export default class Canvas extends React.Component {
 		this.setState(state);
 	}
 
+	getTrees() {
+		if (this._trees) return this._trees;
+		let trees = [];
+		for (let i = 0; i < this.state.trees; i++) {
+			trees.push(<Tree
+				key={['tree', i].join('.')}
+			/>);
+		}
+		return this._trees = trees;
+	}
+
 	render() {
+		
 		return <Stage {...this.state.surface}>
 			<Layer id='background'>				
 				<Rect
@@ -73,11 +87,7 @@ export default class Canvas extends React.Component {
 				/>
 			</Layer>
 			<Layer id='trees' {...this.state.layer}>
-				{this.state.trees.map((b, i) => <Tree
-					key = {['tree', i].join('.')}
-					data={b}
-					rand={this.state.rand}
-				/>)}
+				{this.getTrees()}
 			</Layer>
 			<Layer id='players' {...this.state.layer}>			
 				{this.state.players.map((b, i) => <Shooter
