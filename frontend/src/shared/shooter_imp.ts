@@ -1,17 +1,19 @@
 import { Game } from "./interfaces"
 import { ShooterAction, ShooterState, ShooterObservation, GameOptions, Player, Bullet, } from "./shooter_interfaces";
 
+const delta = 1 / GameOptions.fps;
+
 export class ShooterGame implements Game<ShooterState, ShooterAction, ShooterObservation> {
 
   createState(seed: number): ShooterState {
     //it's possible to do something more intelligent here after adding obstacles
-    var player1 = {
+    let player1 = {
       x: GameOptions.playerRadius,
       y: GameOptions.playerRadius,
       angle: 45,
       cooldown: 0,
     };
-    var player2 = {
+    let player2 = {
       x: GameOptions.gameWidth - GameOptions.playerRadius,
       y: GameOptions.gameHeight - GameOptions.playerRadius,
       angle: 225,
@@ -24,48 +26,59 @@ export class ShooterGame implements Game<ShooterState, ShooterAction, ShooterObs
     };
   }
 
-  updateState(state: ShooterState, action: ShooterAction[]): ShooterState {
-    var dt = 1 / GameOptions.fps;
-    var n = state.players.length;
-    for(let i = 0; i < n; i++) {
-      var curr = action[i];
-      var player = state.players[i];
-      if (curr.fireBullet && player.cooldown < 0.01) {
-        state.bullets.push({sourceAgent: i, x: player.x, y: player.y, angle: player.angle});
-        player.cooldown = GameOptions.bulletCooldown;
+  updateState(state: ShooterState, actions: ShooterAction[]): ShooterState {
+    const n = state.players.length;
+
+    const newBullets = [];
+    const newPlayers = [];
+
+    for (let i = 0; i < n; i++) {
+      const player = state.players[i];
+      const action = actions[i];
+      
+      let cooldown = player.cooldown;
+      let angle = player.angle;
+
+      if (action.fireBullet && player.cooldown < 0.01) {
+        newBullets.push({sourceAgent: i, x: player.x, y: player.y, angle: player.angle});
+        cooldown = GameOptions.bulletCooldown;
+      } else {
+        cooldown = Math.max(0, cooldown - delta);
       }
-      if (curr.turnLeft && !curr.turnRight) {
-        player.angle -= GameOptions.playerTurnSpeed * dt % 360;
+
+      if (action.turnLeft) angle -= (GameOptions.playerTurnSpeed * delta) % 360;
+      if (action.turnRight) angle += (GameOptions.playerTurnSpeed * delta) % 360;
+
+      let newPlayer = {
+        ...player,
+        cooldown,
+        angle
+      };
+      if (action.moveForward) {
+        newPlayer = moveObject(newPlayer, GameOptions.playerMoveSpeed, GameOptions.playerRadius);
       }
-      else if (!curr.turnLeft && curr.turnRight) {
-        player.angle += GameOptions.playerTurnSpeed * dt % 360;
-      }
-      if (curr.moveForward) {
-        player = moveObject(player, GameOptions.playerMoveSpeed, GameOptions.playerRadius);
-      }
-      player.cooldown -= dt;
-      if(player.cooldown < 0) {player.cooldown = 0;}
+
+      newPlayers.push(newPlayer);
     }
-    var newbullets = [];
-    for(var bullet of state.bullets) {
-      for(let i = 0; i < n; i++) {
-        player = state.players[i];
-        if(detectCollision(player, bullet, n)) {
-          //TODO actual collision handle
+
+    for (const bullet of state.bullets) {
+      let collides = false;
+      for (let i = 0; i < n; i++) {
+        const player = state.players[i];
+        if (detectCollision(player, bullet, i)) {
+          collides = true;
+          break;
         }
-        else {
-          bullet = moveObject(bullet, GameOptions.bulletSpeed, 0);
-          if(detectCollision(player, bullet, n)) {
-            //TODO actual collision handle
-          }
-          else if(bullet.x > 0 && bullet.x < GameOptions.gameWidth && bullet.y > 0 && bullet.y < GameOptions.gameHeight){
-            newbullets.push(bullet);
-          }
+      }
+      if (!collides) {
+        let newBullet = moveObject(bullet, GameOptions.bulletSpeed, GameOptions.bulletRadius);
+        if (newBullet.x > 0 && newBullet.x < GameOptions.gameWidth && newBullet.y > 0 && newBullet.y < GameOptions.gameHeight){
+          newBullets.push(newBullet);
         }
       }
     }
-    state.bullets = newbullets;
-    return state;
+    
+    return { players: newPlayers, bullets: newBullets };
   }
 
   generateObservation(state: ShooterState, agentIdx: number): ShooterObservation {
@@ -90,7 +103,7 @@ export class ShooterGame implements Game<ShooterState, ShooterAction, ShooterObs
       let bulletDetected = 0;
       let n = state.players.length;
       for(let j = 0; j < n; j ++) {
-        if(j == agentIdx) {continue;}
+        if(j === agentIdx) {continue;}
         if(isInside(playerDetectionRectangle, [state.players[j].x, state.players[j].y])){
           enemyDetected = 1;
           break;
