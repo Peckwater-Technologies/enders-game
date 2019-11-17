@@ -55,7 +55,7 @@ export class ShooterGame implements Game<ShooterState, ShooterAction, ShooterObs
         angle
       };
       if (action.moveForward) {
-        newPlayer = moveObject(newPlayer, GameOptions.playerMoveSpeed, GameOptions.playerRadius);
+        newPlayer = moveObject(newPlayer, GameOptions.playerMoveSpeed * delta, GameOptions.playerRadius);
       }
 
       newPlayers.push(newPlayer);
@@ -71,7 +71,7 @@ export class ShooterGame implements Game<ShooterState, ShooterAction, ShooterObs
         }
       }
       if (!collides) {
-        let newBullet = moveObject(bullet, GameOptions.bulletSpeed, GameOptions.bulletRadius);
+        let newBullet = moveObject(bullet, GameOptions.bulletSpeed * delta, 0);
         if (newBullet.x > 0 && newBullet.x < GameOptions.gameWidth && newBullet.y > 0 && newBullet.y < GameOptions.gameHeight){
           newBullets.push(newBullet);
         }
