@@ -1,6 +1,10 @@
 import { Game, StateUpdate } from "./interfaces"
 import { ShooterAction, ShooterState, ShooterObservation, GameOptions, Player, Bullet, Obstacle, ObstacleShape, } from "./shooter_interfaces";
 
+import {players} from '../defaults.json';
+
+import {randBetween} from '../utils/random';
+
 const delta = 1 / GameOptions.fps;
 
 export const ShooterGame: Game<ShooterState, ShooterAction, ShooterObservation> = {
@@ -8,15 +12,15 @@ export const ShooterGame: Game<ShooterState, ShooterAction, ShooterObservation> 
   createState(seed: number): ShooterState {
     //it's possible to do something more intelligent here after adding obstacles
     let player1 = {
-      x: GameOptions.playerRadius,
-      y: GameOptions.playerRadius,
+      x: randBetween(players[0].x[0], players[0].x[1]),
+      y: randBetween(players[0].x[0], players[0].x[1]),
       angle: 45,
       cooldown: 0,
       health: 1,
     };
     let player2 = {
-      x: GameOptions.gameWidth - GameOptions.playerRadius,
-      y: GameOptions.gameHeight - GameOptions.playerRadius,
+		x: randBetween(players[1].x[0], players[1].x[1]),
+		y: randBetween(players[1].x[0], players[1].x[1]),
       angle: 225,
       cooldown: 0,
       health: 1,

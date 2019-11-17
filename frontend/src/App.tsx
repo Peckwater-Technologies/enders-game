@@ -8,6 +8,34 @@ import { ShooterGame } from './shared/shooter_imp';
 
 class App extends React.Component {
 
+	handleKeyPress(event: KeyboardEvent): void {
+		console.log('hello world');
+		console.log(event);
+		if (event.keyCode === 38) {
+			// up arrow
+		}
+		else
+		if (event.keyCode === 40) {
+			// down arrow
+		}
+		else
+		if (event.keyCode === 37) {
+		   // left arrow
+		}
+		else
+		if (event.keyCode === 39) {
+		   // right arrow
+		}
+	}
+
+	componentDidMount(){
+		document.addEventListener("keydown", this.handleKeyPress, false);
+	}
+	
+	componentWillUnmount(){
+		document.removeEventListener("keydown", this.handleKeyPress, false);
+	}
+
 	render() {
 		let ref = React.createRef<Canvas>();
 
@@ -19,7 +47,14 @@ class App extends React.Component {
 			GameOptions.fps
 		)
 
-		return <div className="App"> {
+		return <div
+			className="App"
+			onKeyPress={this.handleKeyPress}
+			onKeyDown={this.handleKeyPress}
+			onKeyUp={this.handleKeyPress}
+			id='container'
+			ref='container'
+		> {
 			<Canvas ref={ref} />
 		} </div>;
 	}
