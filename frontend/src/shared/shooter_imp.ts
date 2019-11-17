@@ -126,6 +126,7 @@ export const ShooterGame: Game<ShooterState, ShooterAction, ShooterObservation> 
 
     let enemySensors = [];
     let bulletSensors = [];
+    let obstacleSensors = [];
     for(let i = 0; i < GameOptions.noSensors; i++) {
       let sensorAngle = (angle + i * sensorSpread) / 180 * Math.PI;
       let halfsidevector: [number, number] = [Math.cos(sensorAngle + Math.PI / 2), Math.sin(sensorAngle + Math.PI / 2)];
@@ -135,6 +136,7 @@ export const ShooterGame: Game<ShooterState, ShooterAction, ShooterObservation> 
 
       let enemyDetected = 0;
       let bulletDetected = 0;
+      let obstacleDetected = 0;
       let n = state.players.length;
       for(let j = 0; j < n; j ++) {
         if(j === agentIdx) {continue;}
@@ -149,8 +151,15 @@ export const ShooterGame: Game<ShooterState, ShooterAction, ShooterObservation> 
           break;
         }
       }
+      for(var tree of state.obstacles) { //TODO other cases
+        if(isInside(bulletDetectionRectangle, [tree.x, tree.y])) {
+          obstacleDetected = 1;
+          break;
+        }
+      }
       enemySensors.push(enemyDetected);
       bulletSensors.push(bulletDetected);
+      obstacleSensors.push(obstacleDetected);
     }
     return {
       x: x,
@@ -162,7 +171,7 @@ export const ShooterGame: Game<ShooterState, ShooterAction, ShooterObservation> 
       // Sensors are 0 or 1 (indicating presence)
       enemySensors: enemySensors,
       bulletSensors: bulletSensors,
-      obstacleSensors: [], //TODO
+      obstacleSensors: obstacleSensors,
     };
   },
 
