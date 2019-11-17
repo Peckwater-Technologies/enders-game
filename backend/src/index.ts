@@ -24,16 +24,25 @@ const port = 4321;
 
 app.get("/", (req, res) => res.send("Hello World!"));
 
-const model = makeModel(5, 5);
+let currentModel: tf.LayersModel = makeModel(5, 5);
+let currentPerformance = 0;
 
 app.get("/models/shooter", async (req, res) => {
-  const json = await modelToJson(model);
+  const json = await modelToJson(currentModel);
   res.send(json);
 });
 
-app.post("/models/shooter", (req, res) => {
-  const data = req.body;
-  res.send("TODO");
+app.post("/models/shooter", async (req, res) => {
+  const data = JSON.parse(req.body);
+  const performance: number = data.performance;
+
+  if (performance > currentPerformance) {
+    currentPerformance = performance;
+    currentModel = await jsonToModel(data.model);
+    res.send("Improvement");
+  } else {
+    res.send("Not an improvement");
+  }
 });
 
 // tslint:disable-next-line: no-console
