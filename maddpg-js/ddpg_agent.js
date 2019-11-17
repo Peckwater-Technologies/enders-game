@@ -113,7 +113,7 @@ class DDPGAgent {
         const tfActions = await this.ddpg.predict(tf.tensor2d([state]));
         let buf = await tfActions.buffer()
         const actions = buf.values;
-        this.env.step([actions[0], actions[1]]);
+        this.env.step(actions);
         tfActions.dispose();
     }
 
@@ -144,7 +144,7 @@ class DDPGAgent {
         let buf = await tfActions.buffer();
         let mAcions = buf.values;
         console.log(mAcions)
-        let mReward = await this.env.step([mAcions[0], mAcions[1]],  tfPreviousStep.dataSync());
+        let mReward = await this.env.step(mAcions,  tfPreviousStep.dataSync());
         console.log(mReward);
         this.rewardsList.push(mReward);
         // Get the new observations
@@ -155,7 +155,7 @@ class DDPGAgent {
             mDone = 1;
         }
         // Add the new tuple to the buffer
-        await this.ddpg.memory.append(mPreviousStep, [mAcions[0], mAcions[1]], mReward, mState, mDone);
+        await this.ddpg.memory.append(mPreviousStep, mAcions, mReward, mState, mDone);
         // Dispose tensors
         tfPreviousStep.dispose();
         tfActions.dispose();
