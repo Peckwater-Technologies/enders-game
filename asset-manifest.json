@@ -1,21 +1,22 @@
 {
   "files": {
-    "main.css": "/enders-game/static/css/main.85b1ac6a.chunk.css",
-    "main.js": "/enders-game/static/js/main.25ffbb80.chunk.js",
-    "main.js.map": "/enders-game/static/js/main.25ffbb80.chunk.js.map",
+    "main.css": "/enders-game/static/css/main.89cbb074.chunk.css",
+    "main.js": "/enders-game/static/js/main.ea7d98d7.chunk.js",
+    "main.js.map": "/enders-game/static/js/main.ea7d98d7.chunk.js.map",
     "runtime-main.js": "/enders-game/static/js/runtime-main.933d4f2b.js",
     "runtime-main.js.map": "/enders-game/static/js/runtime-main.933d4f2b.js.map",
-    "static/js/2.9562b981.chunk.js": "/enders-game/static/js/2.9562b981.chunk.js",
-    "static/js/2.9562b981.chunk.js.map": "/enders-game/static/js/2.9562b981.chunk.js.map",
+    "static/js/2.4c8324a2.chunk.js": "/enders-game/static/js/2.4c8324a2.chunk.js",
+    "static/js/2.4c8324a2.chunk.js.map": "/enders-game/static/js/2.4c8324a2.chunk.js.map",
     "index.html": "/enders-game/index.html",
-    "precache-manifest.1b7ab2e5ed3e24a8c2012bf0ff6e01bb.js": "/enders-game/precache-manifest.1b7ab2e5ed3e24a8c2012bf0ff6e01bb.js",
+    "precache-manifest.bbe719c9795faa490d92666926aa66eb.js": "/enders-game/precache-manifest.bbe719c9795faa490d92666926aa66eb.js",
     "service-worker.js": "/enders-game/service-worker.js",
-    "static/css/main.85b1ac6a.chunk.css.map": "/enders-game/static/css/main.85b1ac6a.chunk.css.map"
+    "static/css/main.89cbb074.chunk.css.map": "/enders-game/static/css/main.89cbb074.chunk.css.map",
+    "static/media/expando.png": "/enders-game/static/media/expando.14dd7c5b.png"
   },
   "entrypoints": [
     "static/js/runtime-main.933d4f2b.js",
-    "static/js/2.9562b981.chunk.js",
-    "static/css/main.85b1ac6a.chunk.css",
-    "static/js/main.25ffbb80.chunk.js"
+    "static/js/2.4c8324a2.chunk.js",
+    "static/css/main.89cbb074.chunk.css",
+    "static/js/main.ea7d98d7.chunk.js"
   ]
 }
