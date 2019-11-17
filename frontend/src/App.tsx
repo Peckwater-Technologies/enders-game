@@ -37,6 +37,9 @@ class App extends React.Component {
 				className="App"
 				id='container'
 				ref='container'
+				style={{
+					backgroundColor: '#RRGGBB'
+				}}
 			>
 			{ <Canvas ref={ref} /> }
 		</div>;

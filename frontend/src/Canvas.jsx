@@ -88,7 +88,6 @@ export default class Canvas extends React.Component {
 	}
 
 	render() {
-		console.log(this.state);
 		return <Stage {...this.state.surface}
 			x={-this.state.minX * this.state.scale}
 			y={-this.state.minY * this.state.scale}
@@ -120,6 +119,7 @@ export default class Canvas extends React.Component {
 			<Layer id='players' {...this.state.layer}>			
 				{this.state.players.map((b, i) => <Shooter
 					key={['shooter', i].join('.')}
+					i={i}
 					data={b}
 				/>)}
 			</Layer>

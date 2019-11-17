@@ -12,6 +12,7 @@
 	"shooter": {
 		"radius": 20,
 		"colour": "blue",
+		"enemy": "#ff0000",
 		"handColour": "white",
 		"gunColour": "black",
 		"handRadius": 5,

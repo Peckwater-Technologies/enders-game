@@ -41,7 +41,6 @@ export function realPlayer(): [(event: KeyboardEvent) => void, (event: KeyboardE
 
 
   function keyDown(event: KeyboardEvent): void {
-    console.log("Key down");
     switch (event.keyCode) {
       case KEY_LEFT:
         action.turnLeft = true;
@@ -95,7 +94,6 @@ export class RealPlayer implements Agent<ShooterObservation, ShooterAction> {
   }
 
   keyDown(event: KeyboardEvent): void {
-    console.log("Key down");
     switch (event.keyCode) {
       case KEY_LEFT:
         this.rotate_left = true;
