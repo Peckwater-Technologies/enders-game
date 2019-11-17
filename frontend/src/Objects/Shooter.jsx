@@ -13,7 +13,6 @@ export default class Bullet extends React.Component {
 				rotation={b.angle}
 				x={b.x}
 				y={b.y}
-				draggable={true}
 			>
 				<Circle
 					radius={GameOptions.playerRadius}
