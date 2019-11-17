@@ -18,23 +18,23 @@ export default class Canvas extends React.Component {
 	constructor(props) {
 		super(props);
 		this.checkSize = this.checkSize.bind(this);
-		this.newPosition = this.newPosition.bind(this);
+		this.updateState = this.updateState.bind(this);
 		defaults.surface.width = window.innerWidth;
 		defaults.surface.height = window.innerHeight;
 		this.state = implement(defaults);
 		this.state.rand = Math.random();
-		//setInterval(this.newPosition, 1000 / config.frameRate);
+		setInterval(() => this.updateState({
+			players: implement(defaults.players),
+			bullets: implement(defaults.bullets)
+		}), 1000 / config.frameRate);
 	}
 
 	setEnv(props) {
 
 	}
 
-	newPosition() {
-		let state = Object.assign(this.state, {
-			shooters: implement(defaults.shooters),
-			bullets: implement(defaults.bullets)
-		});
+	updateState(ShooterState) {
+		let state = Object.assign(this.state, ShooterState);
 		this.setState(state);
 	}
 
@@ -79,8 +79,8 @@ export default class Canvas extends React.Component {
 					rand={this.state.rand}
 				/>)}
 			</Layer>
-			<Layer id='shooters' {...this.state.layer}>			
-				{this.state.shooters.map((b, i) => <Shooter
+			<Layer id='players' {...this.state.layer}>			
+				{this.state.players.map((b, i) => <Shooter
 					key = {['shooter', i].join('.')}
 					data={b}
 				/>)}
