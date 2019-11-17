@@ -1,54 +1,36 @@
 import React from 'react';
-import { Stage, Layer, Rect, Text, Circle } from 'react-konva';
-import Konva from 'konva';
+import { Stage, Layer, Rect} from 'react-konva';
 
-import Shooter from './Objects/Shooter.jsx';
-import Bullet from './Objects/Bullet.jsx';
+import Shooter from './Objects/Shooter';
+import Bullet from './Objects/Bullet';
+import Tree from './Objects/Tree';
+
+import {randBetween} from './utils/random';
+
+import config from './config.json';
+import defaults from './defaults.json';
+
+const {background} = config;
 
 export default class Canvas extends React.Component {
 
 	constructor(props) {
 		super(props);
 		this.checkSize = this.checkSize.bind(this);
-		this.state = {
-			surface: {
-				width: 1920,
-				height: 1080,
-				left: 0,
-				top: 0,
-			},
-			layer: {
-				fill: 'green'
-			},
-			shooters: [
-				{
-					x: 100,
-					y: 100,
-					angle: 135
-				},				
-				{
-					x: 200,
-					y: 200
-				}
-			],
-			bullets: [
-				{
-					x: 150,
-					y: 150,
-					angle: 45
-				},
-				{
-					x: 160,
-					y: 160,
-					angle: 45
-				},
-				{
-					x: 170,
-					y: 170,
-					angle: 45
-				}
-			]
-		}
+		this.newPosition = this.newPosition.bind(this);
+		defaults.surface.width = window.innerWidth;
+		defaults.surface.height = window.innerHeight;
+		this.state = implement(defaults);
+		this.state.rand = Math.random();
+		//setInterval(this.newPosition, 1000 / config.frameRate);
+	}
+
+	newPosition() {
+		let state = Object.assign(this.state, {
+			shooters: implement(defaults.shooters),
+			bullets: implement(defaults.bullets)
+		});
+		this.setState(state);
 	}
 
 	componentDidMount() {
@@ -67,31 +49,23 @@ export default class Canvas extends React.Component {
 		this.setState(state);
 	}
 
-	componentDidUpdate() {
-		console.log(this.refs);
-		const canvas = this.refs.canvas;/*
-		let ctx = canvas.getContext('2d');
-		ctx.beginPath();
-		ctx.rect(20, 40, 50, 50);
-		ctx.fillStyle = "#FF0000";
-		ctx.fill();
-		ctx.closePath();
-		console.log(ctx);*/
-	}
-
 	render() {
 		return <Stage {...this.state.surface} ref='canvas' >
 			<Layer id='background'>				
 				<Rect
-					x={0}
-					y={0}
+					x={background.x}
+					y={background.y}
 					width={this.state.surface.width}
 					height={this.state.surface.height}
-					fill='#608038'
-					style={{
-						display: 'none'
-					}}
+					fill={background.colour}
 				/>
+			</Layer>
+			<Layer id='trees' {...this.state.layer}>
+				{this.state.trees.map((b, i) => <Tree
+					key = {['tree', i].join('.')}
+					data={b}
+					rand={this.state.rand}
+				/>)}
 			</Layer>
 			<Layer id='shooters' {...this.state.layer}>			
 				{this.state.shooters.map((b, i) => <Shooter
@@ -107,4 +81,24 @@ export default class Canvas extends React.Component {
 			</Layer>
 		</Stage>
 	}
+}
+
+function implement(obj) {
+	if (Array.isArray(obj)) {
+		if (!obj.every(value => typeof value === 'number')) {
+			let arr = [];
+			for (let value of obj) {
+				if (typeof value !== 'object') arr.push(value);
+				else arr.push(implement(value));
+			}
+			return arr;
+		}
+		else return randBetween(obj[0], obj[1]);
+	}
+	let res = {};
+	for (let [k, v] of Object.entries(obj)) {
+		if (typeof v !== 'object') res[k] = v;
+		else res[k] = implement(v);
+	}
+	return res;
 }

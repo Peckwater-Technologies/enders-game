@@ -1,4 +1,10 @@
 {
+	"frameRate": 100,
+	"background": {
+		"colour": "#608038",
+		"x": 0,
+		"y": 0
+	},
 	"shooter": {
 		"radius": 20,
 		"colour": "blue",
@@ -9,8 +15,12 @@
 		"gunLength": 30
 	},
 	"bullet": {
-		"width": 5,
-		"height": 2,
 		"colour": "#080808"
+	},
+	"tree": {
+		"colour": "#2d572c",
+		"trunkColour": "#381f08",
+		"min": 20,
+		"max": 50
 	}
 }
