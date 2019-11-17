@@ -10,7 +10,7 @@ export default class Bullet extends React.Component {
 		let b = this.props.data;
 		return (			
 			<Group
-				rotation={b.angle}
+				rotation={b.angle + 90}
 				x={b.x}
 				y={b.y}
 			>
@@ -31,7 +31,7 @@ export default class Bullet extends React.Component {
 					id='left-hand'
 					//x={-GameOptions.playerRadius / (Math.sqrt(2))}
 					//y={-GameOptions.playerRadius / (Math.sqrt(2))}
-					x={GameOptions.playerRadius}
+					y={-GameOptions.playerRadius}
 					radius={5}
 					fill='white'
 					rotation={b.angle}
@@ -40,8 +40,8 @@ export default class Bullet extends React.Component {
 					id='right-hand'
 					width={shooter.handRadius * 2}
 					height={shooter.handRadius * 2}
-					y={-shooter.gunWidth}
-					x={2 * GameOptions.playerRadius}
+					x={shooter.gunWidth}
+					y={-2 * GameOptions.playerRadius}
 					//height={GameOptions.playerRadius}
 					//x={Math.sqrt((GameOptions.playerRadius ** 2) / 8)}
 					//y={-3 * Math.sqrt((GameOptions.playerRadius ** 2) / 8)}
