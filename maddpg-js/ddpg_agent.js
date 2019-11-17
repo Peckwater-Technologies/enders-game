@@ -1,8 +1,16 @@
-// This class is called from js/MADDPG/index.js
-class MADDPGAgent {
+const AdaptiveParamNoiseSpec = require("./noise.js")
+const PrioritizedMemory = require("./prioritized_memory.js")
+const {Actor, Critic, copyModel,  copyFromSave} = require("./models.js")
+const {DDPG, logTfMemory} = require("./ddpg.js")
+const tf = require('@tensorflow/tfjs');
+var seedrandom = require('seedrandom');
+
+
+// This class is called from js/DDPG/index.js
+class DDPGAgent {
 
     /**
-     * @param env (metacar.env) Set in js/MADDPG/index.js
+     * @param env (metacar.env) Set in js/DDPG/index.js
      */
     constructor(env, config){
 
@@ -14,17 +22,16 @@ class MADDPGAgent {
         this.config = {
             "stateSize": config.stateSize || 17,
             "nbActions": config.nbActions || 2,
-            "nbOtherActions": config.nbOtherActions || 4,
             "seed": config.seed || 0,
             "batchSize": config.batchSize || 128,
             "actorLr": config.actorLr || 0.0001,
-            "criticLr": config .criticLr || 0.001,
+            "criticLr": config.criticLr || 0.001,
             "memorySize": config.memorySize || 30000,
             "gamma": config.gamme || 0.99,
             "noiseDecay": config.noiseDecay || 0.99,
             "rewardScale": config.rewardScale || 1,
-            "nbEpochs": config.nbEpochs || 200,
-            "nbEpochsCycle": config.nbEpochsCycle || 10,
+            "nbEpochs": config.nbEpochs || 2000,
+            "nbEpochsCycle": config.nbEpochsCycle || 5,
             "nbTrainSteps": config.nbTrainSteps || 110,
             "tau": config.tau || 0.008,
             "initialStddev": config.initialStddev || 0.1,
@@ -55,64 +62,69 @@ class MADDPGAgent {
         this.critic = new Critic(this.config);
 
         // Seed javascript
-        Math.seedrandom(0);
+        seedrandom(0);
 
         this.rewardsList = [];
         this.epiDuration = [];
 
-        // MADDPG
-        this.maddpg = new MADDPG(this.actor, this.critic, this.memory, this.noise, this.config);
+        // DDPG
+        this.ddpg = new DDPG(this.actor, this.critic, this.memory, this.noise, this.config);
+    }
+    async init(){
+        await this.ddpg.init();
     }
 
     save(name){
         /*
             Save the network
         */
-       this.ddpg.critic.model.save('downloads://critic-' + name);
-       this.ddpg.actor.model.save('downloads://actor-'+ name);
+       //this.ddpg.critic.model.save('file://critic-' + name);
+       //this.ddpg.actor.model.save('file://actor-'+ name);
     }
 
     async restore(folder, name){
         /*
             Restore the weights of the network
         */
-        const critic = await tf.loadModel('https://metacar-project.com/public/models/'+folder+'/critic-'+name+'.json');
-        const actor = await tf.loadModel("https://metacar-project.com/public/models/"+folder+"/actor-"+name+".json");
+        const critic = await tf.loadLayersModel('https://metacar-project.com/public/models/'+folder+'/critic-'+name+'.json');
+        const actor = await tf.loadLayersModel("https://metacar-project.com/public/models/"+folder+"/actor-"+name+".json");
 
-        this.maddpg.critic = copyFromSave(critic, Critic, this.config, this.ddpg.obsInput, this.ddpg.actionInput);
-        this.maddpg.actor = copyFromSave(actor, Actor, this.config, this.ddpg.obsInput, this.ddpg.actionInput);
+        this.ddpg.critic = copyFromSave(critic, Critic, this.config, this.ddpg.obsInput, this.ddpg.actionInput);
+        this.ddpg.actor = copyFromSave(actor, Actor, this.config, this.ddpg.obsInput, this.ddpg.actionInput);
 
-        // Define in js/MADDPG/models.js
+        // Define in js/DDPG/models.js
         // Init target network Q' and μ' with the same weights
-        this.maddpg.actorTarget = copyModel(this.maddpg.actor, Actor);
-        this.maddpg.criticTarget = copyModel(this.maddpg.critic, Critic);
+        this.ddpg.actorTarget = copyModel(this.ddpg.actor, Actor);
+        this.ddpg.criticTarget = copyModel(this.ddpg.critic, Critic);
         // Perturbed Actor (See parameter space noise Exploration paper)
-        this.maddpg.perturbedActor = copyModel(this.maddpg.actor, Actor);
+        this.ddpg.perturbedActor = copyModel(this.ddpg.actor, Actor);
         //this.adaptivePerturbedActor = copyModel(this.actor, Actor);
-        this.maddpg.setLearningOp();
+        this.ddpg.setLearningOp();
     }
 
     /**
      * Play one step
      */
-    play(){
+    async play(){
         // Get the current state
         const state = this.env.getState().linear;
+        console.log(state)
         // Pick an action
-        const tfActions = this.maddpg.predict(tf.tensor2d([state]));
-        const actions = tfActions.buffer().values;
-        agent.env.step([actions[0], actions[1]]);
+        const tfActions = await this.ddpg.predict(tf.tensor2d([state]));
+        let buf = await tfActions.buffer()
+        const actions = buf.values;
+        this.env.step([actions[0], actions[1]]);
         tfActions.dispose();
     }
 
     /**
      * Get the estimation of the Q value given the state
-     * and the action and the other action
+     * and the action
      * @param state number[]
      * @param action [a, steering]
      */
-    getQvalue(state, a, oa){
-        return this.maddpg.getQvalue(state, a, oa);
+    getQvalue(state, a){
+        return this.ddpg.getQvalue(state, a);
     }
 
     stop(){
@@ -125,22 +137,25 @@ class MADDPGAgent {
      * @param mPreviousStep number[]
      * @return {done, state} One boolean and the new state
      */
-    stepTrain(tfPreviousStep, mPreviousStep){
+    async stepTrain(tfPreviousStep, mPreviousStep){
         // Get actions
-        const tfActions = this.maddpg.perturbedPrediction(tfPreviousStep);
+        const tfActions = await this.ddpg.perturbedPrediction(tfPreviousStep);
         // Step in the environment with theses actions
-        let mAcions = tfActions.buffer().values;
-        let mReward = this.env.step([mAcions[0], mAcions[1]]);
+        let buf = await tfActions.buffer();
+        let mAcions = buf.values;
+        console.log(mAcions)
+        let mReward = await this.env.step([mAcions[0], mAcions[1]],  tfPreviousStep.dataSync());
+        console.log(mReward);
         this.rewardsList.push(mReward);
         // Get the new observations
-        let mState = this.env.getState().linear;
-        let tfState = tf.tensor2d([mState]);
+        let mState = await this.env.getState().linear;
+        let tfState = await tf.tensor2d([mState]);
         let mDone = 0;
         if (mReward == -1 && this.config.stopOnRewardError){
             mDone = 1;
         }
         // Add the new tuple to the buffer
-        this.maddpg.memory.append(mPreviousStep, [mAcions[0], mAcions[1]], mReward, mState, mDone);
+        await this.ddpg.memory.append(mPreviousStep, [mAcions[0], mAcions[1]], mReward, mState, mDone);
         // Dispose tensors
         tfPreviousStep.dispose();
         tfActions.dispose();
@@ -151,24 +166,22 @@ class MADDPGAgent {
     /**
      * Optimize models and log states
      */
-    _optimize(){
-        this.maddpg.noise.desiredActionStddev = Math.max(0.1, this.config.noiseDecay * this.maddpg.noise.desiredActionStddev);
+    async _optimize(){
+        this.ddpg.noise.desiredActionStddev = await Math.max(0.1, this.config.noiseDecay * this.ddpg.noise.desiredActionStddev);
         let lossValuesCritic = [];
         let lossValuesActor = [];
         console.time("Training");
         for (let t=0; t < this.config.nbTrainSteps; t++){
-            let {lossC, lossA} = this.maddpg.optimizeCriticActor();
-            lossValuesCritic.push(lossC);
-            lossValuesActor.push(lossA);
+            let {lossC, lossA} = await this.ddpg.optimizeCriticActor();
+            await lossValuesCritic.push(lossC);
+            await lossValuesActor.push(lossA);
         }
         console.timeEnd("Training");
-        console.log("desiredActionStddev:", this.maddpg.noise.desiredActionStddev);
-        setMetric("CriticLoss", mean(lossValuesCritic));
-        setMetric("ActorLoss", mean(lossValuesActor));
+        console.log("desiredActionStddev:", this.ddpg.noise.desiredActionStddev);
     }
 
     /**
-     * Train MADDPG Agent
+     * Train DDPG Agent
      */
     async train(realTime){
         this.stopTraining = false;
@@ -178,23 +191,23 @@ class MADDPGAgent {
             this.rewardsList = [];
             this.stepList = [];
             this.distanceList = [];
-            document.getElementById("trainingProgress").innerHTML = "Progression: "+this.epoch+"/"+this.config.nbEpochs+"<br>";
             for (let c=0; c < this.config.nbEpochsCycle; c++){
+                console.log(c);
                 if (c%10==0){ logTfMemory(); }
-                let mPreviousStep = this.env.getState().linear;
-                let tfPreviousStep = tf.tensor2d([mPreviousStep]);
+                let mPreviousStep = await this.env.getState().linear;
+                let tfPreviousStep = await tf.tensor2d([mPreviousStep]);
                 let step = 0;
 
                 console.time("LoopTime");
                 for (step=0; step < this.config.maxStep; step++){
-                    let rel = this.stepTrain(tfPreviousStep, mPreviousStep);
+                    let rel = await this.stepTrain(tfPreviousStep, mPreviousStep);
                     mPreviousStep = rel.mState;
                     tfPreviousStep = rel.tfState;
                     if (rel.mDone && this.config.stopOnRewardError){
+                        console.timeEnd("LoopTime");
                         break;
                     }
                     if (this.stopTraining){
-                        this.env.render(true);
                         return;
                     }
                     if (realTime && step % 10 == 0)
@@ -202,32 +215,31 @@ class MADDPGAgent {
                 }
                 this.stepList.push(step);
                 console.timeEnd("LoopTime");
-                let distance = this.ddpg.adaptParamNoise();
+                let distance = await this.ddpg.adaptParamNoise();
                 this.distanceList.push(distance[0]);
 
                 if (this.config.resetEpisode){
                     this.env.reset();
                 }
-                this.env.shuffle({cars: false});
+                await this.env.shuffle();
                 tfPreviousStep.dispose();
                 console.log("e="+ this.epoch +", c="+c);
          
                 await tf.nextFrame();
             }
             if (this.epoch > 5){
-                this._optimize();
+                await this._optimize();
             }
             if (this.config.saveDuringTraining && this.epoch % this.config.saveInterval == 0 && this.epoch != 0){
-                this.save("model-maddpg-traffic-epoch-"+this.epoch);
+                await this.save("model-ddpg-traffic-epoch-"+this.epoch);
             }
-            setMetric("Reward", mean(this.rewardsList));
-            setMetric("EpisodeDuration", mean(this.stepList));
-            setMetric("NoiseDistance", mean(this.distanceList));
             await tf.nextFrame();
         }
             
 
-            this.env.render(true);
+            await this.env.render(true);
     }
 
-};
+}
+
+module.exports = DDPGAgent;
