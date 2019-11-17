@@ -92,10 +92,7 @@ export default class Canvas extends React.Component {
 		return <Stage {...this.state.surface}
 			x={-this.state.minX * this.state.scale}
 			y={-this.state.minY * this.state.scale}
-			scale={{
-				x: this.state.scale,
-				y: this.state.scale
-			}}
+			scale={{ x: this.state.scale, y: this.state.scale }}
 		>
 			<Layer id='background'>				
 				<Rect

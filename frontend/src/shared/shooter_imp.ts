@@ -10,16 +10,16 @@ export const ShooterGame: Game<ShooterState, ShooterAction, ShooterObservation> 
   createState(seed: number): ShooterState {
 
     const players = [
-      {
-        x: [200, 800],
-        y: [100, 600],
-        angle: [0, 360]
-      },
-      {
-        x: [200, 800],
-        y: [100, 600],
-        angle: [0, 360]
-      }
+		{
+			"x": [200, 3800],
+			"y": [100, 1900],
+			"angle": [0, 360]
+		},
+		{
+			"x": [200, 3800],
+			"y": [100, 1900],
+			"angle": [0, 360]
+		}
     ];
 
     //it's possible to do something more intelligent here after adding obstacles
