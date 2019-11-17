@@ -24,15 +24,15 @@ export const ShooterGame: Game<ShooterState, ShooterAction, ShooterObservation> 
 
     //it's possible to do something more intelligent here after adding obstacles
     let player1 = {
-      x: randBetween(players[0].x[0], players[0].x[1]),
-      y: randBetween(players[0].y[0], players[0].y[1]),
+      x: randBetween(GameOptions.playerRadius, GameOptions.gameWidth - GameOptions.playerRadius),
+      y: randBetween(GameOptions.playerRadius, GameOptions.gameHeight - GameOptions.playerRadius),
       angle: 45,
       cooldown: 0,
       health: 1,
     };
     let player2 = {
-      x: randBetween(players[1].x[0], players[1].x[1]),
-      y: randBetween(players[1].y[0], players[1].y[1]),
+		x: randBetween(GameOptions.playerRadius, GameOptions.gameWidth - GameOptions.playerRadius),
+		y: randBetween(GameOptions.playerRadius, GameOptions.gameHeight - GameOptions.playerRadius),
       angle: 225,
       cooldown: 0,
       health: 1,

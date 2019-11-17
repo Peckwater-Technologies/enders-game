@@ -27,7 +27,8 @@ export class StampedeBot implements Agent<ShooterObservation, ShooterAction> {
 const KEY_LEFT = 37;
 const KEY_RIGHT = 39;
 const KEY_MOVE = 38;
-const KEY_SHOOT = 40;
+const KEY_STOP = 40;
+const KEY_SHOOT = 32;
 
 export function realPlayer(): [(event: KeyboardEvent) => void, (event: KeyboardEvent) => void, Agent<ShooterObservation, ShooterAction>] {
 
@@ -50,7 +51,10 @@ export function realPlayer(): [(event: KeyboardEvent) => void, (event: KeyboardE
         break;
       case KEY_MOVE:
         action.moveForward = true;
-        break;
+		break;
+	  case KEY_STOP:
+		action.moveForward = false;
+		break;
       case KEY_SHOOT:
         action.fireBullet = true;
         break;
@@ -65,12 +69,12 @@ export function realPlayer(): [(event: KeyboardEvent) => void, (event: KeyboardE
       case KEY_RIGHT:
         action.turnRight = false;
         break;
-      case KEY_MOVE:
-        action.moveForward = false;
-        break;
-      case KEY_SHOOT:
-        action.fireBullet = false;
-        break;
+		case KEY_MOVE:
+		  action.moveForward = false;
+		  break;
+		case KEY_SHOOT:
+		  action.fireBullet = false;
+		  break;
     }
 	}
 
@@ -102,6 +106,9 @@ export class RealPlayer implements Agent<ShooterObservation, ShooterAction> {
       case KEY_MOVE:
         this.move = true;
         break;
+		case KEY_STOP:
+		  this.move = false;
+		  break;
       case KEY_SHOOT:
         this.shoot = true;
         break;
@@ -116,12 +123,12 @@ export class RealPlayer implements Agent<ShooterObservation, ShooterAction> {
       case KEY_RIGHT:
         this.rotate_right = false;
         break;
-      case KEY_MOVE:
-        this.move = false;
-        break;
-      case KEY_SHOOT:
-        this.shoot = false;
-        break;
+		case KEY_MOVE:
+		  this.move = false;
+		  break;
+		case KEY_SHOOT:
+		  this.shoot = false;
+		  break;
     }
 	}
 

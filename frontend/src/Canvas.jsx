@@ -111,15 +111,15 @@ export default class Canvas extends React.Component {
 			<Layer id='trees' {...this.state.layer}>
 				{this.getTrees()}
 			</Layer>
-			<Layer id='players' {...this.state.layer}>			
-				{this.state.players.map((b, i) => <Shooter
-					key={['shooter', i].join('.')}
-					data={b}
-				/>)}
-			</Layer>
 			<Layer id='bullets' {...this.state.layer}>
 				{this.state.bullets.map((b, i) => <Bullet
 					key = {['bullet', i].join('.')}
+					data={b}
+				/>)}
+			</Layer>
+			<Layer id='players' {...this.state.layer}>			
+				{this.state.players.map((b, i) => <Shooter
+					key={['shooter', i].join('.')}
 					data={b}
 				/>)}
 			</Layer>
