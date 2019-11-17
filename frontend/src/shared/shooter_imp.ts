@@ -1,7 +1,6 @@
 import { Game, StateUpdate } from "./interfaces"
 import { ShooterAction, ShooterState, ShooterObservation, GameOptions, Player, Bullet, Obstacle, ObstacleShape, } from "./shooter_interfaces";
-
-import {randBetween} from '../utils/random';
+import { randBetween, } from "../utils/random";
 
 const delta = 1 / GameOptions.fps;
 
@@ -38,24 +37,11 @@ export const ShooterGame: Game<ShooterState, ShooterAction, ShooterObservation> 
       health: 1,
     };
 
-    let tree = {
-      x: GameOptions.gameWidth / 3,
-      y: GameOptions.gameHeight / 3,
-      shape: ObstacleShape.Circle,
-      size: GameOptions.treeRadius,
-    }
-
-    let rock = {
-      x: 2 * GameOptions.gameWidth / 3,
-      y: 2 * GameOptions.gameHeight / 3,
-      shape: ObstacleShape.Square,
-      size: GameOptions.treeRadius,
-    }
-
+    let players_result = [player1, player2];
     return {
-      players: [player1, player2],
+      players: players_result,
       bullets: [],
-      obstacles: [tree, rock],
+      obstacles: generateTrees(players_result, Math.floor(GameOptions.gameWidth * GameOptions.gameHeight / 40000)),
     };
   },
 
@@ -140,6 +126,7 @@ export const ShooterGame: Game<ShooterState, ShooterAction, ShooterObservation> 
 
     let enemySensors = [];
     let bulletSensors = [];
+    let obstacleSensors = [];
     for(let i = 0; i < GameOptions.noSensors; i++) {
       let sensorAngle = (angle + i * sensorSpread) / 180 * Math.PI;
       let halfsidevector: [number, number] = [Math.cos(sensorAngle + Math.PI / 2), Math.sin(sensorAngle + Math.PI / 2)];
@@ -149,6 +136,7 @@ export const ShooterGame: Game<ShooterState, ShooterAction, ShooterObservation> 
 
       let enemyDetected = 0;
       let bulletDetected = 0;
+      let obstacleDetected = 0;
       let n = state.players.length;
       for(let j = 0; j < n; j ++) {
         if(j === agentIdx) {continue;}
@@ -163,8 +151,15 @@ export const ShooterGame: Game<ShooterState, ShooterAction, ShooterObservation> 
           break;
         }
       }
+      for(var tree of state.obstacles) { //TODO other cases
+        if(isInside(bulletDetectionRectangle, [tree.x, tree.y])) {
+          obstacleDetected = 1;
+          break;
+        }
+      }
       enemySensors.push(enemyDetected);
       bulletSensors.push(bulletDetected);
+      obstacleSensors.push(obstacleDetected);
     }
     return {
       x: x,
@@ -176,7 +171,7 @@ export const ShooterGame: Game<ShooterState, ShooterAction, ShooterObservation> 
       // Sensors are 0 or 1 (indicating presence)
       enemySensors: enemySensors,
       bulletSensors: bulletSensors,
-      obstacleSensors: enemySensors, //TODO
+      obstacleSensors: obstacleSensors,
     };
   },
 
@@ -228,13 +223,17 @@ function moveObject<T extends { x: number, y: number, angle: number }>(object: T
   }
 
   for(let obstacle of obstacles) {
-    let stepx = 0.05 * (obstacle.x - x)
-    let stepy = 0.05 * (obstacle.y - y)
+    let stepx = 0.05 * (x - obstacle.x)
+    let stepy = 0.05 * (y - obstacle.y)
     switch(obstacle.shape) {
       case ObstacleShape.Circle:
         while(radius + obstacle.size > Math.hypot(x - obstacle.x, y - obstacle.y) + 0.1){
           x += stepx;
           y += stepy;
+          if(radius < 1) {
+            x = 1000000;
+            break;
+          }
         }
         break;
       case ObstacleShape.Square:
@@ -242,6 +241,10 @@ function moveObject<T extends { x: number, y: number, angle: number }>(object: T
         while(radius + obstacle.size > Math.hypot(x - obstacle.x, y - obstacle.y) + 0.1){
           x += stepx;
           y += stepy;
+          if(radius < 1) {
+            x = 1000000;
+            break;
+          }
         }
         break;
     }
@@ -283,4 +286,26 @@ function dot(xs: Array<number>, ys: Array<number>) {
     result += xs[i] * ys[i];
   }
   return result;
+}
+
+function generateTrees(players: Array<Player>, n: number): Array<Obstacle> {
+  let trees: Array<Obstacle> = [];
+  for(let i = 0; i < n; i++){
+    let x = randBetween(0, GameOptions.gameWidth);
+    let y = randBetween(0, GameOptions.gameHeight);
+    let size = GameOptions.treeRadius;
+    let isColliding = false;
+    for(let player of players) {
+      if(Math.hypot(x - player.x, y - player.y) < GameOptions.playerRadius + size - 0.1) {isColliding = true; break;}
+    }
+    if(!isColliding){
+      trees.push({
+        x: x,
+        y: y,
+        shape: ObstacleShape.Circle,
+        size: size,
+      });
+    }
+  }
+  return trees;
 }

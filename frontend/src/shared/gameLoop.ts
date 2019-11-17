@@ -15,6 +15,7 @@ export function gameLoop<
     if (isDone) {
       console.log("Game finished. Restarting...");
       state = game.createState(0);
+	  renderer.redeploy(state);
     }
 
     renderer.render(state);

@@ -2,10 +2,24 @@ import React from 'react';
 import {Ellipse, Circle, Rect, Group} from 'react-konva';
 import {GameOptions} from '../shared/shooter_interfaces';
 import config from '../config.json';
+
 const {shooter} = config;
 
 export default class Bullet extends React.Component {
-
+/*
+	componentDidMount() {
+		let shape = this.refs.player;
+		let imageObj = new Image();
+		imageObj.onload = function() {
+			shape.fillPatternImage(imageObj);
+			shape.fillPatternScale({
+				x: GameOptions.playerRadius / 600,
+				y: GameOptions.playerRadius / 600,
+			})
+		};
+		imageObj.src = '/public/flags.png';
+	}
+*/
 	render() {
 		let b = this.props.data;
 		return (			
@@ -15,8 +29,9 @@ export default class Bullet extends React.Component {
 				y={b.y}
 			>
 				<Circle
+					ref='player'
 					radius={GameOptions.playerRadius}
-					fill={shooter.colour}
+					fill={this.props.i ? shooter.enemy : shooter.colour}
 					rotation={b.angle}
 				/>		
 				<Rect

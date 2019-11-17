@@ -29,7 +29,10 @@ class App extends React.Component {
 		let agent2 = new StampedeBot();
 
 		gameLoop(ShooterGame, [agent1, agent2],
-			{ render: state => ref.current && ref.current.updateState(state) },
+			{
+				redeploy: state => ref.current && ref.current.redeploy(state),
+				render: state => ref.current && ref.current.updateState(state)
+			},
 			GameOptions.fps
 		)
 
@@ -37,6 +40,9 @@ class App extends React.Component {
 				className="App"
 				id='container'
 				ref='container'
+				style={{
+					backgroundColor: '#835C3B'
+				}}
 			>
 			{ <Canvas ref={ref} /> }
 		</div>;
