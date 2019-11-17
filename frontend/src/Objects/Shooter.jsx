@@ -35,7 +35,6 @@ export default class Bullet extends React.Component {
 					radius={5}
 					fill='white'
 					rotation={b.angle}
-					draggable={true}
 				/>
 				<Ellipse
 					id='right-hand'
@@ -48,7 +47,6 @@ export default class Bullet extends React.Component {
 					//y={-3 * Math.sqrt((GameOptions.playerRadius ** 2) / 8)}
 					//rotation={-45}
 					fill={shooter.handColour}
-					draggable={true}
 				/>
 			</Group>
 		)

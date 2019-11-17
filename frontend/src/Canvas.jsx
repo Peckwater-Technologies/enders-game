@@ -22,12 +22,15 @@ export default class Canvas extends React.Component {
 		defaults.surface.height = window.innerHeight;
 		this.state = implement(defaults);
 		this.state.rand = Math.random();
-		//setInterval(this.newPosition, 1000 / config.frameRate)
+		//setInterval(this.newPosition, 1000 / config.frameRate);
 	}
 
 	newPosition() {
-		console.log('hello');
-		this.setState(implement(defaults));
+		let state = Object.assign(this.state, {
+			shooters: implement(defaults.shooters),
+			bullets: implement(defaults.bullets)
+		});
+		this.setState(state);
 	}
 
 	componentDidMount() {
@@ -81,22 +84,21 @@ export default class Canvas extends React.Component {
 }
 
 function implement(obj) {
+	if (Array.isArray(obj)) {
+		if (!obj.every(value => typeof value === 'number')) {
+			let arr = [];
+			for (let value of obj) {
+				if (typeof value !== 'object') arr.push(value);
+				else arr.push(implement(value));
+			}
+			return arr;
+		}
+		else return randBetween(obj[0], obj[1]);
+	}
 	let res = {};
 	for (let [k, v] of Object.entries(obj)) {
 		if (typeof v !== 'object') res[k] = v;
-		else {
-			if (Array.isArray(v)) {
-				if (!v.every(value => typeof value === 'number')) {
-					let arr = [];
-					for (let value of v) {
-						if (typeof value !== 'object') arr.push(value);
-						else arr.push(implement(value));
-					}
-					res[k] = arr;
-				}
-				else res[k] = randBetween(v[0], v[1]);
-			} else res[k] = implement(v);
-		}
+		else res[k] = implement(v);
 	}
 	return res;
 }
