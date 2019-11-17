@@ -1,7 +1,6 @@
 import { Game, StateUpdate } from "./interfaces"
 import { ShooterAction, ShooterState, ShooterObservation, GameOptions, Player, Bullet, Obstacle, ObstacleShape, } from "./shooter_interfaces";
-
-import {randBetween} from '../utils/random';
+import { randBetween, } from "../utils/random";
 
 const delta = 1 / GameOptions.fps;
 
@@ -38,24 +37,11 @@ export const ShooterGame: Game<ShooterState, ShooterAction, ShooterObservation> 
       health: 1,
     };
 
-    let tree = {
-      x: GameOptions.gameWidth / 3,
-      y: GameOptions.gameHeight / 3,
-      shape: ObstacleShape.Circle,
-      size: GameOptions.treeRadius,
-    }
-
-    let rock = {
-      x: 2 * GameOptions.gameWidth / 3,
-      y: 2 * GameOptions.gameHeight / 3,
-      shape: ObstacleShape.Square,
-      size: GameOptions.treeRadius,
-    }
-
+    let players_result = [player1, player2];
     return {
-      players: [player1, player2],
+      players: players_result,
       bullets: [],
-      obstacles: [tree, rock],
+      obstacles: generateTrees(players_result, Math.floor(GameOptions.gameWidth * GameOptions.gameHeight / 40000)),
     };
   },
 
@@ -291,4 +277,26 @@ function dot(xs: Array<number>, ys: Array<number>) {
     result += xs[i] * ys[i];
   }
   return result;
+}
+
+function generateTrees(players: Array<Player>, n: number): Array<Obstacle> {
+  let trees: Array<Obstacle> = [];
+  for(let i = 0; i < n; i++){
+    let x = randBetween(0, GameOptions.gameWidth);
+    let y = randBetween(0, GameOptions.gameHeight);
+    let size = GameOptions.treeRadius;
+    let isColliding = false;
+    for(let player of players) {
+      if(Math.hypot(x - player.x, y - player.y) < GameOptions.playerRadius + size - 0.1) {isColliding = true; break;}
+    }
+    if(!isColliding){
+      trees.push({
+        x: x,
+        y: y,
+        shape: ObstacleShape.Circle,
+        size: size,
+      });
+    }
+  }
+  return trees;
 }
