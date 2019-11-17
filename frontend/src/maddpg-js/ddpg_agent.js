@@ -7,7 +7,7 @@ var seedrandom = require('seedrandom');
 
 
 // This class is called from js/DDPG/index.js
-class DDPGAgent {
+export class DDPGAgent {
 
     /**
      * @param env (metacar.env) Set in js/DDPG/index.js
@@ -105,16 +105,15 @@ class DDPGAgent {
     /**
      * Play one step
      */
-    async play(){
+    async play(state){
         // Get the current state
-        const state = this.env.getState().linear;
         console.log(state)
         // Pick an action
         const tfActions = await this.ddpg.predict(tf.tensor2d([state]));
         let buf = await tfActions.buffer()
         const actions = buf.values;
-        this.env.step(actions);
         tfActions.dispose();
+        return this.env.step(actions);
     }
 
     /**
@@ -237,5 +236,3 @@ class DDPGAgent {
     }
 
 }
-
-module.exports = DDPGAgent;

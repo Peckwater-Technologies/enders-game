@@ -1,7 +1,9 @@
 import React from 'react';
 import Canvas from './Canvas';
-import './App.css';
+import Header from './Header';
+import './App.scss';
 import { DumbAgent, StampedeBot, realPlayer } from './shared/dumb_bot';
+import { MappedRLNetBot } from './shared/rl_bot';
 import { gameLoop } from './shared/gameLoop';
 import { GameOptions } from './shared/shooter_interfaces';
 import { ShooterGame } from './shared/shooter_imp';
@@ -20,14 +22,10 @@ class App extends React.Component {
 		document.removeEventListener("keydown", this.player[1]);
 		document.removeEventListener("keyup", this.player[0]);
 	}
-
-	render() {
+	async render() {
 		let ref = React.createRef<Canvas>();
-
-		// let agent1 = this.playerAgent;
 		let agent1 = this.player[2];
 		let agent2 = new StampedeBot();
-
 		gameLoop(ShooterGame, [agent1, agent2],
 			{
 				redeploy: state => ref.current && ref.current.redeploy(state),
@@ -35,17 +33,24 @@ class App extends React.Component {
 			},
 			GameOptions.fps
 		)
-
-		return <div
-				className="App"
-				id='container'
-				ref='container'
-				style={{
-					backgroundColor: '#835C3B'
-				}}
-			>
-			{ <Canvas ref={ref} /> }
-		</div>;
+		return (
+			<>
+				<div className='Background'>
+					<div className='Wallpaper'/>
+				</div>
+				<Header/>
+				<br />
+				<div className='Column'>
+					<div
+						className="App"
+						id='container'
+						ref='container'
+					>
+						{<Canvas ref={ref} />}
+					</div>
+				</div>
+			</>			
+		);
 	}
 }
 

@@ -76,6 +76,7 @@ export function realPlayer(): [(event: KeyboardEvent) => void, (event: KeyboardE
 				action.moveForward = false;
 				break;
 			case KEY_SHOOT:
+				event.preventDefault();
 				action.fireBullet = true;
 				break;
 		}
