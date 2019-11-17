@@ -1,5 +1,7 @@
 {
 	"surface": {
+		"width": 1920,
+		"height": 1080
 	},
 	"players": [{
 			"x": [200, 800],
@@ -29,5 +31,7 @@
 		}
 	],
 	"trees": 15,
-	"scale": 1
+	"scale": 1,
+	"minX": 0,
+	"minY": 0
 }
