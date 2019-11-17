@@ -9,12 +9,20 @@ import { GameOptions } from './shared/shooter_interfaces';
 import { ShooterGame } from './shared/shooter_imp';
 import expando_img from './assets/expando.png';
 
-class App extends React.Component<{}, {expando: ReactElement | null}> {
+class App extends React.Component<{}, {
+	expando: ReactElement | null,
+	shrinking: Boolean,
+	growing: Boolean,
+	full_screen: Boolean
+}> {
 
 	constructor(props: Object) {
 		super(props);
 		this.state = {
-			expando: null
+			expando: null,
+			shrinking: false,
+			growing: false,
+			full_screen: false
 		}
 	}
 
@@ -30,7 +38,6 @@ class App extends React.Component<{}, {expando: ReactElement | null}> {
 			src={expando_img}
 			onClick={() => {
 				console.log('hello world');
-				canvas.class.append('growing')
 			}}
 		/>;
 		this.setState({
@@ -42,7 +49,8 @@ class App extends React.Component<{}, {expando: ReactElement | null}> {
 		document.removeEventListener("keydown", this.player[1]);
 		document.removeEventListener("keyup", this.player[0]);
 	}
-	async render() {
+
+	render() {
 		let ref = React.createRef<Canvas>();
 		let agent1 = this.player[2];
 		let agent2 = new StampedeBot();
@@ -62,11 +70,11 @@ class App extends React.Component<{}, {expando: ReactElement | null}> {
 				<br />
 				<div className='Column'>
 					<div
-						className="App"
+						className={'App' + (this.state.growing ? '.growing' ? this.state.shrinking : '.shrinking' ? this.state.full_screen : '.full-screen' : '')}
 						id='container'
 						ref='container'
 					>
-						{<Canvas ref={ref} />}
+						{<Canvas ref={ref}/>}
 						{this.state.expando}
 					</div>
 				</div>

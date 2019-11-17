@@ -1,4 +1,4 @@
-import {GameState, GameAction, GameObservation, Agent, Renderer, Game} from "./interfaces";
+import {GameState, GameAction, GameObservation} from "./interfaces";
 
 export const GameOptions = {
 	gameWidth: 1920,

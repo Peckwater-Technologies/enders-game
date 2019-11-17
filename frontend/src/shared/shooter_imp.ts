@@ -8,20 +8,6 @@ export const ShooterGame: Game<ShooterState, ShooterAction, ShooterObservation> 
 
   createState(seed: number): ShooterState {
 
-    const players = [
-		{
-			"x": [200, 3800],
-			"y": [100, 1900],
-			"angle": [0, 360]
-		},
-		{
-			"x": [200, 3800],
-			"y": [100, 1900],
-			"angle": [0, 360]
-		}
-    ];
-
-    //it's possible to do something more intelligent here after adding obstacles
     let player1 = {
       x: randBetween(GameOptions.playerRadius, GameOptions.gameWidth - GameOptions.playerRadius),
       y: randBetween(GameOptions.playerRadius, GameOptions.gameHeight - GameOptions.playerRadius),
@@ -127,13 +113,9 @@ export const ShooterGame: Game<ShooterState, ShooterAction, ShooterObservation> 
     //[enemies, bullets, collisions]
     let sensors = [new Array(GameOptions.noSensors), new Array(GameOptions.noSensors), new Array(GameOptions.noSensors)];
 
-    let objects_in_view = [];
-
     let n = state.players.length;
-    for(let j = 0; j < n; j ++) {
-      if(j === agentIdx) {continue;}
-      let x1 = state.players[j].x;
-      let y1 = state.players[j].y;
+
+    function updateSensors(x1: number, y1: number, i: number) {
       if(Math.hypot(x - x1, y - y1) < GameOptions.sensorRadius){
         let cosofangle = cosangle([x, y], [x1, y1]);
         let modofangle = Math.acos(cosofangle);
@@ -143,39 +125,26 @@ export const ShooterGame: Game<ShooterState, ShooterAction, ShooterObservation> 
         }
         let k = Math.floor(modofangle / sensorSpread);
         if(k == GameOptions.noSensors) {k--;}
-        sensors[0][k] = 1;
+        sensors[i][k] = 1;
       }
+    };
+
+    for(let j = 0; j < n; j ++) {
+      if(j === agentIdx) {continue;}
+      let x1 = state.players[j].x;
+      let y1 = state.players[j].y;
+      updateSensors(x1, y1, 0)
     }
     for(var bullet of state.bullets) {
       if(bullet.sourceAgent == agentIdx) {continue;}
       let x1 = bullet.x;
       let y1 = bullet.y;
-      if(Math.hypot(x - x1, y - y1) < GameOptions.sensorRadius){
-        let cosofangle = cosangle([x, y], [x1, y1]);
-        let modofangle = Math.acos(cosofangle);
-        let anotherangle = Math.acos(cosangle([y, -x], [x1, y1]))
-        if( anotherangle < Math.PI / 2) {
-          modofangle = 2 * Math.PI - modofangle;
-        }
-        let k = Math.floor(modofangle / sensorSpread);
-        if(k == GameOptions.noSensors) {k--;}
-        sensors[1][k] = 1;
-      }
+      updateSensors(x1, y1, 1);
     }
     for(var obstacle of state.obstacles) {
       let x1 = obstacle.x;
       let y1 = obstacle.y;
-      if(Math.hypot(x - x1, y - y1) < GameOptions.sensorRadius){
-        let cosofangle = cosangle([x, y], [x1, y1]);
-        let modofangle = Math.acos(cosofangle);
-        let anotherangle = Math.acos(cosangle([y, -x], [x1, y1]))
-        if( anotherangle < Math.PI / 2) {
-          modofangle = 2 * Math.PI - modofangle;
-        }
-        let k = Math.floor(modofangle / sensorSpread);
-        if(k == GameOptions.noSensors) {k--;}
-        sensors[2][k] = 1;
-      }
+      updateSensors(x1, y1, 2);
     }
 
     return {
@@ -271,28 +240,6 @@ function moveObject<T extends { x: number, y: number, angle: number }>(object: T
     x: x,
     y: y,
   };
-}
-
-//https://math.stackexchange.com/questions/190111/how-to-check-if-a-point-is-inside-a-rectangle
-function isInside(rectangle: Array<[number, number]>, point: [number, number]) {
-  let AM = [point[0] - rectangle[0][0], point[1] - rectangle[0][1]];
-  let AB = [rectangle[1][0] - rectangle[0][0], rectangle[1][1] - rectangle[0][1]];
-  let AD = [rectangle[3][0] - rectangle[0][0], rectangle[3][1] - rectangle[0][1]];
-  let AMdotAB = dot(AM, AB);
-  let AB2 = dot(AB, AB);
-  let AMdotAD = dot(AM, AD);
-  let AD2 = dot(AD, AD);
-  return (0 < AMdotAB && AMdotAB < AB2 && 0 < AMdotAD && AMdotAD < AD2);
-}
-
-function rectangle(x: number, y: number, radius: number, shortvector: [number, number], longvector: [number, number]): Array<[number, number]> {
-  let halfsidevector = [shortvector[0] * radius, shortvector[1] * radius];
-  let longsidevector = [longvector[0] * (radius+GameOptions.sensorRadius), longvector[1] *(radius+GameOptions.sensorRadius)]
-  let a: [number, number] = [x + halfsidevector[0], y + halfsidevector[1]];
-  let b: [number, number] = [x - halfsidevector[0], y - halfsidevector[1]];
-  let c: [number, number] = [b[0] + longsidevector[0], b[1] + longsidevector[1]];
-  let d: [number, number] = [a[0] + longsidevector[0], a[1] + longsidevector[1]];
-  return [a, b, c, d];
 }
 
 function dot(xs: Array<number>, ys: Array<number>) {
