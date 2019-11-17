@@ -42,6 +42,8 @@ class ShooterGame implements Game<ShooterState, ShooterAction, ShooterObservatio
       if (curr.moveForward) {
         player = moveObject(player, GameOptions.playerMoveSpeed, GameOptions.playerRadius);
       }
+      player.cooldown -= dt;
+      if(player.cooldown < 0) {player.cooldown = 0;}
     }
     var newbullets = [];
     for(var bullet of state.bullets) {
@@ -62,8 +64,6 @@ class ShooterGame implements Game<ShooterState, ShooterAction, ShooterObservatio
       }
     }
     state.bullets = newbullets;
-    state.cooldown -= dt;
-    if(state.cooldown < 0) {state.cooldown = 0;}
     return state;
   }
 
@@ -80,10 +80,10 @@ class ShooterGame implements Game<ShooterState, ShooterAction, ShooterObservatio
     let bulletSensors = [];
     for(let i = 0; i < GameOptions.noSensors; i++) {
       let sensorAngle = (angle + i * sensorSpread) / 180 * Math.PI;
-      let halfsidevector = [Math.cos(sensorAngle + Math.PI / 2), Math.sin(sensorAngle + Math.PI / 2)];
-      let longsidevector = [Math.cos(sensorAngle), Math.sin(sensorAngle)];
-      let playerDetectionRectangle = rectangle(x, y, GameOptions.playerRadius, halfsidevector, longsidevector);
-      let bulletDetectionRectangle = rectangle(x, y, GameOptions.bulletRadius, halfsidevector, longsidevector);
+      let halfsidevector: [number, number] = [Math.cos(sensorAngle + Math.PI / 2), Math.sin(sensorAngle + Math.PI / 2)];
+      let longsidevector: [number, number] = [Math.cos(sensorAngle), Math.sin(sensorAngle)];
+      let playerDetectionRectangle: Array<[number, number]> = rectangle(x, y, GameOptions.playerRadius, halfsidevector, longsidevector);
+      let bulletDetectionRectangle: Array<[number, number]> = rectangle(x, y, GameOptions.bulletRadius, halfsidevector, longsidevector);
 
       let enemyDetected = 0;
       let bulletDetected = 0;
@@ -96,13 +96,13 @@ class ShooterGame implements Game<ShooterState, ShooterAction, ShooterObservatio
         }
       }
       for(var bullet of state.bullets) {
-        if(bullet.sourceAgent != agentIdx && isInside(bulletDetectionRectangle, bullet.x, bullet.y)) {
+        if(bullet.sourceAgent != agentIdx && isInside(bulletDetectionRectangle, [bullet.x, bullet.y])) {
           bulletDetected = 1;
           break;
         }
       }
       enemySensors.push(enemyDetected);
-      bulletSensors.push(bulletDetectd);
+      bulletSensors.push(bulletDetected);
     }
     return {
       x: x,
@@ -149,20 +149,30 @@ function moveObject<T extends { x: number, y: number, angle: number }>(object: T
 function isInside(rectangle: Array<[number, number]>, point: [number, number]) {
   let AM = [point[0] - rectangle[0][0], point[1] - rectangle[0][1]];
   let AB = [rectangle[1][0] - rectangle[0][0], rectangle[1][1] - rectangle[0][1]];
-  let AD = [rectangle[3[0] - rectangle[0][0], rectangle[3][1] - rectangle[0][1]];
-  let AMdotAB = Math.dot(AM, AB);
-  let AB2 = Math.dot(AB, AB);
-  let AMdotAD = Math.dot(AM, AD);
-  let AD2 = Math.dot(AD, AD);
+  let AD = [rectangle[3][0] - rectangle[0][0], rectangle[3][1] - rectangle[0][1]];
+  let AMdotAB = dot(AM, AB);
+  let AB2 = dot(AB, AB);
+  let AMdotAD = dot(AM, AD);
+  let AD2 = dot(AD, AD);
   return (0 < AMdotAB && AMdotAB < AB2 && 0 < AMdotAD && AMdotAD < AD2);
 }
 
-function rectangle(x: number, y: number, radius: number, shortvector: [number, number], longvector[number, number]) {
+function rectangle(x: number, y: number, radius: number, shortvector: [number, number], longvector: [number, number]): Array<[number, number]> {
   let halfsidevector = [shortvector[0] * radius, shortvector[1] * radius];
   let longsidevector = [longvector[0] * (radius+GameOptions.sensorRadius), longvector[1] *(radius+GameOptions.sensorRadius)]
-  let a = [x + halfsidevector[0], y + halfsidevector[1]];
-  let b = [x - halfsidevector[0], y - halfsidevector[1]];
-  let c = [b[0] + longsidevector[0], b[1] + longsidevector[1]];
-  let d = [a[0] + longsidevector[0], a[1] + longsidevector[1]];
+  let a: [number, number] = [x + halfsidevector[0], y + halfsidevector[1]];
+  let b: [number, number] = [x - halfsidevector[0], y - halfsidevector[1]];
+  let c: [number, number] = [b[0] + longsidevector[0], b[1] + longsidevector[1]];
+  let d: [number, number] = [a[0] + longsidevector[0], a[1] + longsidevector[1]];
   return [a, b, c, d];
+}
+
+function dot(xs: Array<number>, ys: Array<number>) {
+  let result = 0;
+  let xn = xs.length;
+  let yn = ys.length;
+  for(let i = 0; i < xn && i < yn; i++) {
+    result += xs[i] * ys[i];
+  }
+  return result;
 }
