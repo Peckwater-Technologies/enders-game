@@ -11,3 +11,15 @@ class DumbAgent implements Agent<ShooterObservation, ShooterAction> {
     };
   }
 }
+
+class StampedeBot implements Agent<ShooterObservation, ShooterAction> {
+  act(state: ShooterObservation): ShooterAction {
+    let isEnemyInFront = state.enemySensors[0] == 1;
+    return {
+      fireBullet: isEnemyInFront,
+      turnLeft: !isEnemyInFront,
+      turnRight: false,
+      moveForward: isEnemyInFront,
+    };
+  }
+}
