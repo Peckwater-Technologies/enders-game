@@ -9,7 +9,14 @@ export function gameLoop<
       const obs = game.generateObservation(state, idx)
       return agent.act(obs)
     });
-    state = game.updateState(state, actions);
+    const { newState, isDone } = game.updateState(state, actions);
+    state = newState;
+
+    if (isDone) {
+      console.log("Game finished. Restarting...");
+      state = game.createState(0);
+    }
+
     renderer.render(state);
   }
 

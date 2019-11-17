@@ -5,7 +5,7 @@ export class DumbAgent implements Agent<ShooterObservation, ShooterAction> {
   act(state: ShooterObservation): ShooterAction {
     return {
       fireBullet: true,
-      turnLeft: true,
+      turnLeft: false,
       turnRight: false,
       moveForward: true,
     };

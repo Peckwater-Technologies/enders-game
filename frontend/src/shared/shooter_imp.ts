@@ -1,4 +1,4 @@
-import { Game } from "./interfaces"
+import { Game, StateUpdate } from "./interfaces"
 import { ShooterAction, ShooterState, ShooterObservation, GameOptions, Player, Bullet, Obstacle, ObstacleShape, } from "./shooter_interfaces";
 
 const delta = 1 / GameOptions.fps;
@@ -12,12 +12,14 @@ export class ShooterGame implements Game<ShooterState, ShooterAction, ShooterObs
       y: GameOptions.playerRadius,
       angle: 45,
       cooldown: 0,
+      health: 1,
     };
     let player2 = {
       x: GameOptions.gameWidth - GameOptions.playerRadius,
       y: GameOptions.gameHeight - GameOptions.playerRadius,
       angle: 225,
       cooldown: 0,
+      health: 1,
     };
 
     let tree = {
@@ -41,7 +43,7 @@ export class ShooterGame implements Game<ShooterState, ShooterAction, ShooterObs
     };
   }
 
-  updateState(state: ShooterState, actions: ShooterAction[]): ShooterState {
+  updateState(state: ShooterState, actions: ShooterAction[]): StateUpdate<ShooterState> {
     const n = state.players.length;
 
     const newBullets = [];
@@ -76,12 +78,15 @@ export class ShooterGame implements Game<ShooterState, ShooterAction, ShooterObs
       newPlayers.push(newPlayer);
     }
 
+    const damagePerPlayer = Array(n).fill(0);
+
     for (const bullet of state.bullets) {
       let collides = false;
       for (let i = 0; i < n; i++) {
         const player = state.players[i];
         if (detectCollision(player, bullet, i)) {
           collides = true;
+          damagePerPlayer[i] += GameOptions.bulletDamage;
           break;
         }
       }
@@ -93,7 +98,19 @@ export class ShooterGame implements Game<ShooterState, ShooterAction, ShooterObs
       }
     }
 
-    return { ...state, players: newPlayers, bullets: newBullets };
+    let done = false;
+    for (let i = 0; i < n; i++) {
+      newPlayers[i].health -= damagePerPlayer[i];
+      if (newPlayers[i].health < 0.01) {
+        done = true;
+      }
+    }
+
+    return {
+      newState: { ...state, players: newPlayers, bullets: newBullets },
+      isDone: done,
+      reward: damagePerPlayer.map(x => -x),
+    };
   }
 
   generateObservation(state: ShooterState, agentIdx: number): ShooterObservation {
@@ -138,6 +155,7 @@ export class ShooterGame implements Game<ShooterState, ShooterAction, ShooterObs
       y: y,
       angle: angle,
       cooldown: cooldown, // seconds left
+      health: agent.health,
 
       // Sensors are 0 or 1 (indicating presence)
       enemySensors: enemySensors,
@@ -145,6 +163,31 @@ export class ShooterGame implements Game<ShooterState, ShooterAction, ShooterObs
       obstacleSensors: [], //TODO
     };
   }
+
+  observationSize: number = 5 + 3 * GameOptions.noSensors;
+  getData(observation: ShooterObservation): number[] {
+    return [
+      observation.x,
+      observation.y,
+      observation.angle,
+      observation.cooldown,
+      observation.health,
+      ...observation.obstacleSensors,
+      ...observation.enemySensors,
+      ...observation.bulletSensors,
+    ];
+  }
+
+  actionSize: number = 4;
+  getAction(data: number[]): ShooterAction {
+    return {
+      fireBullet: data[0] > 0.5,
+      turnLeft: data[1] > 0.5,
+      turnRight: data[2] > 0.5,
+      moveForward: data[3] > 0.5,
+    }
+  }
+
 }
 
 function detectCollision(player: Player, bullet: Bullet, player_id: number) {

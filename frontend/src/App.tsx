@@ -1,7 +1,7 @@
 import React from 'react';
 import Canvas from './Canvas';
 import './App.css';
-import { DumbAgent } from './shared/dumb_bot';
+import { DumbAgent, StampedeBot } from './shared/dumb_bot';
 import { gameLoop } from './shared/gameLoop';
 import { GameOptions } from './shared/shooter_interfaces';
 import { ShooterGame } from './shared/shooter_imp';
@@ -12,7 +12,7 @@ class App extends React.Component {
 		let ref = React.createRef<Canvas>();
 
 		let agent1 = new DumbAgent();
-		let agent2 = new DumbAgent();
+		let agent2 = new StampedeBot();
 		let shooterGame = new ShooterGame();
 
 		gameLoop(shooterGame,
