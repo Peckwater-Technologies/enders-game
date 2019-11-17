@@ -31,8 +31,10 @@ export default class Canvas extends React.Component {
 		}), 1000 / config.frameRate);*/
 	}
 
-	setEnv(props) {
-
+	redeploy(props) {
+		if (props) {
+			if (this._trees) delete this._trees;
+		}
 	}
 
 	updateState(ShooterState) {

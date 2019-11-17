@@ -12,7 +12,6 @@ export default class Tree extends React.Component {
 
 	render() {
 		let b = this.props;
-		console.log(b);
 		let trees = [];
 		for (let i = 0; i < 4; i++) {
 			let base_x = i & 1;
