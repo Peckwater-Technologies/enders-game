@@ -176,7 +176,7 @@ export const ShooterGame: Game<ShooterState, ShooterAction, ShooterObservation> 
       // Sensors are 0 or 1 (indicating presence)
       enemySensors: enemySensors,
       bulletSensors: bulletSensors,
-      obstacleSensors: [], //TODO
+      obstacleSensors: enemySensors, //TODO
     };
   },
 
