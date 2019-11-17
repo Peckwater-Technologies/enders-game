@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import Canvas from './Canvas';
 import Header from './Header';
 import './App.scss';
@@ -8,8 +8,24 @@ import { gameLoop } from './shared/gameLoop';
 import { GameOptions } from './shared/shooter_interfaces';
 import { ShooterGame } from './shared/shooter_imp';
 import { computeLoop } from './computeLoop';
+import expando_img from './assets/expando.png';
 
-class App extends React.Component {
+class App extends React.Component<{}, {
+	expando: ReactElement | null,
+	shrinking: Boolean,
+	growing: Boolean,
+	full_screen: Boolean
+}> {
+
+	constructor(props: Object) {
+		super(props);
+		this.state = {
+			expando: null,
+			shrinking: false,
+			growing: false,
+			full_screen: false
+		}
+	}
 
 	// private playerAgent = new RealPlayer()
 	private player = realPlayer();
@@ -17,6 +33,17 @@ class App extends React.Component {
 	componentDidMount(){
 		document.addEventListener("keydown", this.player[1]);
 		document.addEventListener("keyup", this.player[0]);
+		let canvas = this.refs.container;
+		let expando = <img
+			className='expando'
+			src={expando_img}
+			onClick={() => {
+				console.log('hello world');
+			}}
+		/>;
+		this.setState({
+			expando
+		});
 	}
 	
 	componentWillUnmount(){
@@ -46,11 +73,12 @@ class App extends React.Component {
 				<br />
 				<div className='Column'>
 					<div
-						className="App"
+						className={'App' + (this.state.growing ? '.growing' ? this.state.shrinking : '.shrinking' ? this.state.full_screen : '.full-screen' : '')}
 						id='container'
 						ref='container'
 					>
-						{<Canvas ref={ref} />}
+						{<Canvas ref={ref}/>}
+						{this.state.expando}
 					</div>
 				</div>
 			</>			
