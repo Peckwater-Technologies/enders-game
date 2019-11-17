@@ -23,18 +23,19 @@ export default class Canvas extends React.Component {
 		defaults.surface.height = window.innerHeight;
 		this.state = implement(defaults);
 		this.state.rand = Math.random();
-		//setInterval(this.newPosition, 1000 / config.frameRate);
+		setInterval(() => this.newPosition({
+			shooters: implement(defaults.shooters),
+			bullets: implement(defaults.bullets)
+		}), 1000 / config.frameRate);
 	}
 
 	setEnv(props) {
 
 	}
 
-	newPosition() {
-		let state = Object.assign(this.state, {
-			shooters: implement(defaults.shooters),
-			bullets: implement(defaults.bullets)
-		});
+	newPosition(assignee) {
+		console.log(assignee);
+		let state = Object.assign(this.state, assignee);
 		this.setState(state);
 	}
 
