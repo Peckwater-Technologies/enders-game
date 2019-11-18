@@ -51,13 +51,14 @@ export const ShooterGame: Game<ShooterState, ShooterAction, ShooterObservation> 
         cooldown = Math.max(0, cooldown - delta);
       }
 
-      if (action.turnLeft) angle -= (GameOptions.playerTurnSpeed * delta) % 360;
-      if (action.turnRight) angle += (GameOptions.playerTurnSpeed * delta) % 360;
+      if (action.turnLeft) angle -= (GameOptions.playerTurnSpeed * delta);
+      if (action.turnRight) angle += (GameOptions.playerTurnSpeed * delta);
+      angle %= 360;
 
       let newPlayer = {
         ...player,
         cooldown,
-        angle
+        angle,
       };
       if (action.moveForward) {
         newPlayer = moveObject(newPlayer, GameOptions.playerMoveSpeed * delta, GameOptions.playerRadius, state.obstacles);
@@ -117,15 +118,20 @@ export const ShooterGame: Game<ShooterState, ShooterAction, ShooterObservation> 
 
     function updateSensors(x1: number, y1: number, i: number) {
       if(Math.hypot(x - x1, y - y1) < GameOptions.sensorRadius){
-        let cosofangle = cosangle([x, y], [x1, y1]);
+
+        let direction_vector = [Math.cos(angle / 180 * Math.PI), Math.sin (angle / 180 * Math.PI)];
+
+        let cosofangle = cosangle(direction_vector, [x - x1, y - y1]);
         let modofangle = Math.acos(cosofangle);
-        let anotherangle = Math.acos(cosangle([y, -x], [x1, y1]))
-        if( anotherangle < Math.PI / 2) {
+        let perpendicularangle = Math.acos(cosangle([direction_vector[1], -direction_vector[0]], [x1, y1]))
+        if( perpendicularangle < Math.PI / 2) {
           modofangle = 2 * Math.PI - modofangle;
         }
         let k = Math.floor(modofangle / sensorSpread);
+        k = (k + Math.floor(GameOptions.noSensors / 2)) % GameOptions.noSensors
         if(k == GameOptions.noSensors) {k--;}
         sensors[i][k] = 1;
+        if(i == 0) {console.log(k + " " + modofangle + " " + cosofangle + " " + angle);}
       }
     };
 
