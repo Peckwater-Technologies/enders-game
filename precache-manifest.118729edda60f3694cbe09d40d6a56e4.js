@@ -1,19 +1,19 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "442a9433fb51620da653ecddcd9c092a",
+    "revision": "857e308997e4d1b92156e3154b1d3065",
     "url": "/enders-game/index.html"
   },
   {
-    "revision": "f8b3f7332c90d387082b",
+    "revision": "697339447d4dabcafd2d",
     "url": "/enders-game/static/css/main.89cbb074.chunk.css"
   },
   {
-    "revision": "4d4a21e1305d86ef6ff8",
-    "url": "/enders-game/static/js/2.4c8324a2.chunk.js"
+    "revision": "9d6e104aa7f87beafd50",
+    "url": "/enders-game/static/js/2.943acc59.chunk.js"
   },
   {
-    "revision": "f8b3f7332c90d387082b",
-    "url": "/enders-game/static/js/main.1d9816a0.chunk.js"
+    "revision": "697339447d4dabcafd2d",
+    "url": "/enders-game/static/js/main.240efa47.chunk.js"
   },
   {
     "revision": "c923f9423b723a14ffc4",
