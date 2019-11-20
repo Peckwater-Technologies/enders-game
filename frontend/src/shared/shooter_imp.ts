@@ -95,7 +95,8 @@ export const ShooterGame: Game<ShooterState, ShooterAction, ShooterObservation> 
       }
 	}
 	let reward = damagePerPlayer.map(x => -x);
-	reward = reward.map(x => x -= Math.min(...reward.slice(0)));
+	let min = Math.min(...reward.slice(0));
+	reward = reward.map(x => x -= min);
     return {
       newState: { ...state, players: newPlayers, bullets: newBullets },
       isDone: done,
