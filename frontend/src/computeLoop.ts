@@ -42,7 +42,7 @@ export async function doEvent(
 				totalReward,
 				steps
 			}) => {
-				let performance = totalReward * steps;
+				let performance = totalReward / steps;
 				modelToJson(model, performance).then(json => {
 					fetch(baseURL + "/models/shooter", {
 						method: 'POST',
