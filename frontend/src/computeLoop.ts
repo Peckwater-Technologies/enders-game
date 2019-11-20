@@ -61,6 +61,10 @@ export async function doEvent(
 }
 
 export async function computeLoop() {
+	while (true) await Promise.race([doEvent(new StampedeBot(), {
+		render: () => {},
+		redeploy: () => {}
+	}, 100, true), delay(30000)]);
 	let all = [];
 	for (let i = 0; i < 200; i++) {
 		all.push(doEvent(new StampedeBot(), {
@@ -69,4 +73,10 @@ export async function computeLoop() {
 		}, 100, true));
 	}
 	Promise.all(all);
+}
+
+function delay(ms: number): Promise<null> {
+	return new Promise((res, rej) => {
+		setTimeout(res, ms)
+	})
 }
