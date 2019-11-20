@@ -2,7 +2,10 @@ import * as tf from "@tensorflow/tfjs";
 import express from "express";
 import { ShooterGame } from "../../frontend/src/shared/shooter_imp";
 import { jsonToModel, modelToJson } from "../../frontend/src/shared/tfSerialize";
-import {makeModel, mutate} from "./mutate"
+import {makeModel, mutate} from "./mutate";
+import fs from 'fs';
+
+const savePath = '../data/currentModel.json';
 
 const app = express();
 const port = 80;
@@ -27,14 +30,17 @@ app.use(express.json());
 
 app.post("/models/shooter", async (req, res) => {
   const data = req.body;
-  console.log(Object.getOwnPropertyNames(data));
  
   const performance: number = data.performance;
   if (performance) console.log(req.ip, ': ', performance);
   if (performance > currentPerformance) {
     currentPerformance = performance;
     currentModel = await jsonToModel(JSON.stringify(data));//.model);
-    res.send("Improvement");
+	res.send("Improvement");
+	fs.writeFileSync(savePath, JSON.stringify([
+		modelToJson(currentModel, currentPerformance),
+		currentPerformance
+	]), 'utf8');
     console.log(req.ip, ': new model improvement');
   } else {
     res.send("Not an improvement");
