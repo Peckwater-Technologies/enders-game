@@ -6,10 +6,10 @@ export const GameOptions = {
 	fps: 30, // so a tick every 1000/30 = 33ms
 
 	playerRadius: 20,
-	playerMoveSpeed: 50, // pixels / second
+	playerMoveSpeed: 100, // pixels / second
 	playerTurnSpeed: 180, // degrees  / second
 
-	sensorRadius: 300,
+	sensorRadius: 500,
 
 	noSensors: 20,
 

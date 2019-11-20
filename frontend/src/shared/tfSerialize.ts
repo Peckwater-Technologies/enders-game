@@ -1,10 +1,10 @@
 import * as tf from "@tensorflow/tfjs";
 import { SaveResult } from "@tensorflow/tfjs-core/dist/io/io";
 
-export async function modelToJson(model: tf.LayersModel): Promise<string> {
+export async function modelToJson(model: tf.LayersModel, performance: number): Promise<string> {
   let res: string | null = null;
   await model.save(tf.io.withSaveHandler(async (artifacts: tf.io.ModelArtifacts) => {
-    res = artifactsToJSON(artifacts);
+    res = artifactsToJSON(artifacts, performance);
     return (null as unknown) as SaveResult;
   }));
   if (res === null) {
@@ -17,14 +17,14 @@ export async function modelToJson(model: tf.LayersModel): Promise<string> {
 // Random token to signify string is array buffer
 const arrayBuffToken = "%%ab%%";
 
-function artifactsToJSON(artifacts: tf.io.ModelArtifacts) {
+function artifactsToJSON(artifacts: tf.io.ModelArtifacts, performance: number) {
   function replacer(key: any, value: any) {
     if (value instanceof ArrayBuffer) {
       return arrayBuffToken + ab2str(value);
     }
     return value;
   }
-  return JSON.stringify(artifacts, replacer);
+  return JSON.stringify(Object.assign(artifacts, {performance}), replacer);
 }
 
 export function jsonToModel(json: string): Promise<tf.LayersModel> {

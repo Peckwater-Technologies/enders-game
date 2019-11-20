@@ -14,9 +14,9 @@ export default class Header extends React.Component {
 				<a href={window.location.href.slice(0, -window.location.pathname.length)}>
 					<h1>ENDER'S COMPUTATION</h1>
 				</a>
-				{Links.map(([title, id]) => {
+				{Links.map(([title, id], i) => {
 					return (
-						<a href={window.location.href.slice(0, -window.location.pathname.length)+ '#' + id}>
+						<a key={id + '.' + i} href={window.location.href.slice(0, -window.location.pathname.length)+ '#' + id}>
 							<h2>{title}</h2>
 						</a>
 					)

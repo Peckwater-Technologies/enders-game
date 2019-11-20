@@ -93,12 +93,13 @@ export const ShooterGame: Game<ShooterState, ShooterAction, ShooterObservation> 
       if (newPlayers[i].health < 0.01) {
         done = true;
       }
-    }
-
+	}
+	let reward = damagePerPlayer.map(x => -x);
+	reward = reward.map(x => x -= Math.min(...reward.slice(0)));
     return {
       newState: { ...state, players: newPlayers, bullets: newBullets },
       isDone: done,
-      reward: damagePerPlayer.map(x => -x),
+      reward,
     };
   },
 
@@ -129,9 +130,9 @@ export const ShooterGame: Game<ShooterState, ShooterAction, ShooterObservation> 
         }
         let k = Math.floor(modofangle / sensorSpread);
         k = (k + Math.floor(GameOptions.noSensors / 2)) % GameOptions.noSensors
-        if(k == GameOptions.noSensors) {k--;}
+        if(k === GameOptions.noSensors) {k--;}
         sensors[i][k] = 1;
-        if(i == 0) {console.log(k + " " + modofangle + " " + cosofangle + " " + angle);}
+        //if(i == 0) {console.log(k + " " + modofangle + " " + cosofangle + " " + angle);}
       }
     };
 

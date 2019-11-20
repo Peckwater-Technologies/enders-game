@@ -4,9 +4,10 @@ import Header from './Header';
 import './App.scss';
 import { DumbAgent, StampedeBot, realPlayer } from './shared/dumb_bot';
 import { gameLoop } from './shared/gameLoop';
+import { GameState } from "./shared/interfaces";
 import { GameOptions } from './shared/shooter_interfaces';
 import { ShooterGame } from './shared/shooter_imp';
-import { computeLoop } from './computeLoop';
+import { computeLoop, doEvent } from './computeLoop';
 import expando_img from './assets/expando.png';
 
 class App extends React.Component<{}, {
@@ -56,7 +57,7 @@ class App extends React.Component<{}, {
 
 	}
 
-	componentDidMount(){
+	async componentDidMount(){
 		document.addEventListener("keydown", this.player[1]);
 		document.addEventListener("keyup", this.player[0]);
 		let canvas = this.refs.container;
@@ -77,21 +78,21 @@ class App extends React.Component<{}, {
 	render() {
 		let ref = React.createRef<Canvas>();
 		let agent1 = this.player[2];
-		let agent2 = new StampedeBot();
-		gameLoop(ShooterGame, [agent1, agent2],
+		doEvent(
+			agent1,
 			{
-				redeploy: state => ref.current && ref.current.redeploy(state),
-				render: state => ref.current && ref.current.updateState(state)
+				render: (state: GameState) => ref.current && ref.current.updateState(state),
+				redeploy: (state: GameState) => ref.current && ref.current.redeploy(state)
 			},
-			GameOptions.fps
+			GameOptions.fps,
+			false
 		)
+		computeLoop()
+
 		let name = 'App';
 		if (this.state.growing) name += '.growing';
 		if (this.state.shrinking) name += '.shrinking';
 		if (this.state.full_screen) name += '.full-screen';
-
-		computeLoop()
-
 		return (
 			<>
 				<div className='Background'>
