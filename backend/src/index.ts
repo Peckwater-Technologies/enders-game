@@ -5,7 +5,13 @@ import { jsonToModel, modelToJson } from "../../frontend/src/shared/tfSerialize"
 import {makeModel, mutate} from "./mutate"
 
 const app = express();
-const port = 4321;
+const port = 80;
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', '*');
+  next();
+});
 
 app.get("/", (req, res) => res.send("Hello World!"));
 
@@ -17,14 +23,18 @@ app.get("/models/shooter", async (req, res) => {
   res.send(json);
 });
 
-app.post("/models/shooter", async (req, res) => {
-  const data = JSON.parse(req.body);
-  const performance: number = data.performance;
+app.use(express.json());
 
+app.post("/models/shooter", async (req, res) => {
+  const data = req.body;
+;
+  const performance: number = data.performance;
+  if (performance) console.log(req.ip, ': ', performance);
   if (performance > currentPerformance) {
     currentPerformance = performance;
     currentModel = await jsonToModel(data.model);
     res.send("Improvement");
+    console.log(req.ip, ': new model improvement');
   } else {
     res.send("Not an improvement");
   }
