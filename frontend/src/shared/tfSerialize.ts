@@ -39,6 +39,7 @@ function jsonToArtifacts(json: string): tf.io.ModelArtifacts {
     }
     return value;
   }
+  console.log(json.slice(0, 100));
   return JSON.parse(json, reviver);
 }
 

@@ -27,12 +27,13 @@ app.use(express.json());
 
 app.post("/models/shooter", async (req, res) => {
   const data = req.body;
-;
+  console.log(Object.getOwnPropertyNames(data));
+ 
   const performance: number = data.performance;
   if (performance) console.log(req.ip, ': ', performance);
   if (performance > currentPerformance) {
     currentPerformance = performance;
-    currentModel = await jsonToModel(data.model);
+    currentModel = await jsonToModel(JSON.stringify(data));//.model);
     res.send("Improvement");
     console.log(req.ip, ': new model improvement');
   } else {

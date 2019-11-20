@@ -1,0 +1,8 @@
+
+> backend@1.0.0 start /home/ubuntu/enders/backend
+> tsc-watch --onSuccess "node ./dist/backend/src/index.js" --onFailure "echo Beep! Compilation Failed" 
+
+c
+2:45:26 AM - Starting compilation in watch mode...
+2:45:29 AM -[32m Found 0 errors. Watching for file changes.[39m
+App listening on port 80!
