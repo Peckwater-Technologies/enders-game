@@ -19,7 +19,7 @@ let currentModel: tf.LayersModel = makeModel(ShooterGame.observationSize, Shoote
 let currentPerformance = 0;
 
 app.get("/models/shooter", async (req, res) => {
-  const json = await modelToJson(mutate(currentModel, ShooterGame.observationSize, ShooterGame.actionSize));
+  const json = await modelToJson(mutate(currentModel, ShooterGame.observationSize, ShooterGame.actionSize), 0);
   res.send(json);
 });
 
