@@ -66,6 +66,7 @@ class App extends React.Component<{}, {
 			src={expando_img}
 			onClick={this.handleClick}
 		/>;
+		setTimeout(() => window.location.reload(), 30000);
 		this.setState({
 			expando
 		});

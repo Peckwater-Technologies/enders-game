@@ -62,11 +62,11 @@ export async function doEvent(
 
 export async function computeLoop() {
 	let all = [];
-	for (let i = 0; i < 10; i++) {
+	for (let i = 0; i < 200; i++) {
 		all.push(doEvent(new StampedeBot(), {
 			render: () => {},
 			redeploy: () => {}
-		}, 200, true));
+		}, 100, true));
 	}
 	Promise.all(all);
 }

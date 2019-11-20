@@ -5,7 +5,7 @@ import { jsonToModel, modelToJson } from "../../frontend/src/shared/tfSerialize"
 import {makeModel, mutate} from "./mutate";
 import fs from 'fs';
 
-const savePath = '../data/currentModel.json';
+const savePath = './src/data/currentModel.json';
 
 const app = express();
 const port = 80;
